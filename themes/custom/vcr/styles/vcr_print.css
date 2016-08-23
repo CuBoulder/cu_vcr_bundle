@@ -1,1 +1,0 @@
-#main a:link:after, #main a:visited:after { content:" [" attr(href) "] "; }
