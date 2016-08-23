@@ -1,0 +1,36 @@
+name = vcr
+description = Theme for CU-Boulder VCR site
+screenshot = images/screenshot.png
+core = 7.x
+engine = phptemplate
+
+base theme = cu_bootstrap
+
+
+
+
+
+; Theme specific styles. Any sub-themes should override this.
+stylesheets[all][] = styles/styles.css
+stylesheets[all][] = styles/images.css
+stylesheets[print][] = styles/vcr_print.css
+
+
+
+
+
+regions[search_box]     = Search Box
+regions[navigation]     = Navigation
+regions[secondary-navigation] = Secondary Navigation
+regions[slider]         = Slider
+regions[help]           = Help
+regions[pre_content]    = Pre Content
+regions[content]        = Content
+regions[sidebar_first]  = Left sidebar
+regions[sidebar_second] = Right sidebar
+regions[after_content]  = After Content
+regions[footer]         = Footer
+regions[footer_menus]   = Footer Menus
+regions[site_info]      = Site Information
+regions[site_info_two]  = Site Information Two
+regions[section_title]  = Section Title

@@ -1,0 +1,66 @@
+<?php
+/**
+ * @file
+ * Code for the People feature.
+ */
+
+include_once 'vcr_people.features.inc';
+
+/**
+ * Implements hook_theme_registry_alter().
+ *
+ * Let Drupal know that we've got node--person.tpl.php in our module directory.
+ */
+function vcr_people_theme_registry_alter(&$theme_registry) {
+  $module_path = drupal_get_path('module', 'vcr_people');
+  $theme_registry_copy = $theme_registry;
+  _theme_process_registry($theme_registry_copy, 'phptemplate', 'theme_engine', 'node', $module_path);
+  $theme_registry += array_diff_key($theme_registry_copy, $theme_registry);
+  $hooks = array('node');
+  foreach ($hooks as $h) {
+    if (isset($theme_registry[$h]['theme paths'])) {
+      $first_element = array_shift($theme_registry[$h]['theme paths']);
+      array_unshift($theme_registry[$h]['theme paths'], array_shift($theme_registry[$h]['theme paths']), $module_path);
+    }
+  }
+}
+
+/**
+ * Provide a form-specific alteration instead of the global hook_form_alter().
+ *
+ * Modules can implement hook_form_FORM_ID_alter() to modify a specific form,
+ * rather than implementing hook_form_alter() and checking the form ID, or
+ * using long switch statements to alter multiple forms.
+ *
+ * Form alter hooks are called in the following order: hook_form_alter(),
+ * hook_form_BASE_FORM_ID_alter(), hook_form_FORM_ID_alter(). See
+ * hook_form_alter() for more details.
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the form.
+ * @param array $form_state
+ *   A keyed array containing the current state of the form. The arguments
+ *   that drupal_get_form() was originally called with are available in the
+ *   array $form_state['build_info']['args'].
+ * @param string $form_id
+ *   String representing the name of the form itself. Typically this is the
+ *   name of the function that generated the form.
+ *
+ * @see hook_form_alter()
+ * @see hook_form_BASE_FORM_ID_alter()
+ * @see drupal_prepare_form()
+ */
+function vcr_people_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_state['view']->name == 'person_content_type') {
+    if ((isset($form_state['input']['field_unit_tid'])) && ($form_state['input']['field_unit_tid'] == '3')) {
+      drupal_goto('ocg/about-us/contact-us');
+    }
+  }
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function vcr_people_page_alter(&$page) {
+  drupal_add_css(drupal_get_path('module', 'vcr_people') . '/people-styles.css');
+}

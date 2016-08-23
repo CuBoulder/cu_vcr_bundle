@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function vcr_page_install() {
+  // Configure exclude_node_title module, enabling user defined on page nodes.
+  variable_set('exclude_node_title_content_type_modes_page', array(
+    'full' => 'full',
+    'teaser' => 0,
+    'rss' => 0,
+    'token' => 0,
+    'nodeform' => 0,
+  ));
+}

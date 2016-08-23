@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the VCR Page feature.
+ */
+
+include_once 'vcr_page.features.inc';

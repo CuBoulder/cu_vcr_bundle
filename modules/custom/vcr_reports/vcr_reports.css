@@ -1,0 +1,11 @@
+/* Float select items and align submit button */
+#vcr-reports-selection-form .form-type-select {
+  float: left;
+}
+#vcr-reports-selection-form .form-submit {
+  margin-top: 3.5em;
+  margin-bottom: 1em;
+}
+#vcr-reports-selection-form .ajax-progress {
+  display: none;
+}

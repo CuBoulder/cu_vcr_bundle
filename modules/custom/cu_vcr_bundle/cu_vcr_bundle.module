@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @file
+ * Configuration settings for the VCR bundle.
+ */
+
+/**
+ * Define site permissions in code.
+ *
+ * Create a secure_permissions_data module directory and place this function
+ * in secure_permissions_data.module.
+ *
+ * @param $role
+ *   The role for which the permissions are being requested.
+ *
+ * @return
+ *   An array defining all the permissions for the site.
+ */
+function cu_vcr_bundle_secure_permissions($role) {
+
+  $permissions = array(
+    'administrator' => array(
+      'create any policies_list bean',
+      'create any cu_homepage_widget bean',
+      'create policy content',
+      'create report content',
+      'create compliance_requirement content',
+      'delete any policies_list bean',
+      'delete any policy content',
+      'delete any report content',
+      'delete any cu_homepage_widget bean',
+      'edit any compliance_requirement content',
+      'edit any policies_list bean',
+      'edit any policy content',
+      'edit any report content',
+    ),
+    'anonymous user' => array(),
+    'authenticated user' => array(
+
+    ),
+    'content_editor' => array(
+      'create any policies_list bean',
+      'create policy content',
+      'create report content',
+      'create compliance_requirement content',
+      'edit own compliance_requirement content',
+      'edit own policy content',
+      'edit own report content',
+    ),
+    'developer' => array(
+      'create any policies_list bean',
+      'create any cu_homepage_widget bean',
+      'create policy content',
+      'create report content',
+      'create compliance_requirement content',
+      'delete any policies_list bean',
+      'delete any policy content',
+      'delete any report content',
+      'delete any cu_homepage_widget bean',
+      'edit any compliance_requirement content',
+      'edit any policies_list bean',
+      'edit any policy content',
+      'edit any report content',
+    ),
+    'edit_my_content' => array(),
+    'site_owner' => array(
+      'create any policies_list bean',
+      'create any cu_homepage_widget bean',
+      'create policy content',
+      'create report content',
+      'create compliance_requirement content',
+      'delete any policies_list bean',
+      'delete any policy content',
+      'delete any report content',
+      'delete any cu_homepage_widget bean',
+      'edit any compliance_requirement content',
+      'edit any policies_list bean',
+      'edit any policy content',
+      'edit any report content',
+    ),
+  );
+
+  if (isset($permissions[$role])) {
+    return $permissions[$role];
+  }
+}

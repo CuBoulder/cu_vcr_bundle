@@ -1,0 +1,186 @@
+<?php
+/**
+ * @file
+ * Code for the VCR Reports feature.
+ */
+
+include_once 'vcr_reports.features.inc';
+
+/**
+ * Implements hook_page_alter().
+ */
+function vcr_reports_page_alter(&$page) {
+  drupal_add_css(drupal_get_path('module', 'vcr_reports') . '/vcr_reports.css');
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function vcr_reports_block_info() {
+  $blocks['vcr_reports_selection'] = array(
+    'info' => t('VCR Reports Selection'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function vcr_reports_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'vcr_reports_selection':
+    $block['subject'] = t('Monthly Proposal, Award and Expenditure Reports');
+    $block['content'] = drupal_get_form('vcr_reports_selection_form');
+    break;
+  }
+  return $block;
+}
+
+/**
+ * Form callback to render a report selector.
+ */
+function vcr_reports_selection_form($form, &$form_state) {
+  // Figure out the vid of the 'report_type' vocabulary.
+  $vocab = taxonomy_vocabulary_machine_name_load('report_type');
+
+  // Find all published report nodes and their associated report_type tag
+  // as well as the year/month of publication.
+  $result = db_query("SELECT ti.tid, n.nid, DATE_FORMAT(FROM_UNIXTIME(n.created), '%Y') 'year', DATE_FORMAT(FROM_UNIXTIME(n.created), '%M') 'month' from {node} n JOIN {taxonomy_index} ti on n.nid = ti.nid JOIN {taxonomy_term_data} ttd on ti.tid = ttd.tid WHERE n.status = 1 AND n.type = :type AND ttd.vid = :vid ORDER BY ti.tid, n.created;", array(':type' => 'report', ':vid' => $vocab->vid));
+
+  // Loop through the results and create an array that parses easily.
+  $report_type_options = array();
+  foreach ($result as $record) {
+    // Create an array of all report nids, grouped by report_type, then year,
+    // then month.
+    $report_records[$record->tid][$record->year][$record->month][] = $record->nid;
+    if (!isset($report_type_options[$record->tid])) {
+      $term_report_type = taxonomy_term_load($record->tid);
+      $report_type_options[$term_report_type->tid] = $term_report_type->name;
+    }
+  }
+
+  // Set up default form values.
+  foreach (array('report_type', 'year', 'month') as $name) {
+    // If its in form_state['input'], use that value (coming from ajax)
+    if (isset($form_state['input'][$name])) {
+      $default_values[$name] = $form_state['input'][$name];
+    }
+    // Otherwise, default to the first item of the array.
+    else {
+      switch ($name) {
+        case 'report_type':
+          $default_values[$name] = key($report_records);
+          break;
+        case 'year':
+          $default_values[$name] = key($report_records[$default_values['report_type']]);
+          break;
+        case 'month':
+          $default_values[$name] = key($report_records[$default_values['report_type']][$default_values['year']]);
+          break;
+      }
+    }
+  }
+
+  // Create a wrapper for our ajax callback to replace.
+  $form['selector'] = array(
+    '#prefix' => '<div id="vcr_reports_selector">',
+    '#suffix' => '</div>',
+  );
+  // Provide a select dropdown for the report type.
+  $form['selector']['report_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Report'),
+    '#options' => $report_type_options,
+    '#default_value' => $default_values['report_type'],
+  );
+  // Provide a select dropdown for the year.
+  $form['selector']['year'] = array(
+    '#type' => 'select',
+    '#title' => t('Year'),
+    '#options' => _vcr_reports_year_options_process($report_records[$default_values['report_type']]),
+    '#default_value' => $default_values['year'],
+  );
+  // Provide a select dropdown for the month.
+  $form['selector']['month'] = array(
+    '#type' => 'select',
+    '#title' => t('Month'),
+    '#options' => _vcr_reports_month_options_process($report_records[$default_values['report_type']][$default_values['year']]),
+    '#default_value' => $default_values['month'],
+  );
+
+  // Store the nid associated with the report_type/year/month combination
+  // in a hidden value. The _submit handler will direct the user to the file
+  // attached to this node id.
+  $nid = $report_records[$default_values['report_type']][$default_values['year']][$default_values['month']];
+  $form['selector']['nid'] = array(
+    '#type' => 'hidden',
+    '#value' => $nid,
+  );
+
+  // Add #ajax to the form elements that need it.
+  $ajax = array(
+    'callback' => '_vcr_reports_ajax_reports_selection',
+    'wrapper' => 'vcr_reports_selector',
+    'method' => 'replace',
+    'effect' => 'fade',
+  );
+  $form['selector']['report_type']['#ajax'] = $ajax;
+  $form['selector']['year']['#ajax'] = $ajax;
+  $form['selector']['month']['#ajax'] = $ajax;
+
+  // A lovely submit button.
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+
+  // Set form cache.
+  $form_state['build_info']['immutable'] = TRUE;
+
+  return $form;
+}
+
+/**
+ * Form submit handler for vcr_reports_selection_form.
+ */
+function vcr_reports_selection_form_submit(&$form, &$form_state) {
+  // If the nid is provided via the hidden form element, load the node
+  // and if a file it attached, send the user on their way, otherwise error.
+  if (isset($form_state['values']['nid'][0])) {
+    $node = node_load($form_state['values']['nid'][0]);
+    if (isset($node->field_file[LANGUAGE_NONE][0]['uri'])) {
+      drupal_goto(file_create_url($node->field_file[LANGUAGE_NONE][0]['uri']));
+    }
+  }
+  else {
+    drupal_set_message(t('The report you requested cannot be loaded at this time.'), 'warning');
+  }
+}
+
+/**
+ * Form Ajax callback for vcr_reports_selection_form.
+ */
+function _vcr_reports_ajax_reports_selection($form, &$form_state) {
+  return $form['selector'];
+}
+
+/**
+ * Helper function to create an #options ready array of years.
+ */
+function _vcr_reports_year_options_process($years = array()) {
+  foreach ($years as $y => $months) {
+    $return[$y] = $y;
+  }
+  return $return;
+}
+
+/**
+ * Helper function to create an #options ready array of months.
+ */
+function _vcr_reports_month_options_process($months = array()) {
+  foreach ($months as $m => $nodes) {
+    $return[$m] = $m;
+  }
+  return $return;
+}

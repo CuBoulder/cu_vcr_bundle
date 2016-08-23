@@ -1,0 +1,6 @@
+name = FM Default Content
+description = Initial content for FM
+core = 7.x
+
+dependencies[] = menu
+dependencies[] = menu_block

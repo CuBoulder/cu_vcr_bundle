@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ * Programmatically create VCR users. Oh Yeah!
+ *
+ * Will users and permissions.
+ * More power!
+ */
+
+/**
+ * Impelemnts hook_install().
+ *
+ * Creates a set of default users with specified roles.
+ */
+function vcr_users_install() {
+  // High module weight.
+  // So that it comes after every module's permissions.
+  db_query("UPDATE {system} SET weight = 99 WHERE name = 'vcr_users'");
+
+  // Configure secure_permissions module.
+  variable_set('secure_permissions_active', 1);
+  variable_set('secure_permissions_disable_forms', 1);
+  variable_set('secure_permissions_show_permissions_page', 1);
+  variable_set('secure_permissions_show_roles_page', 0);
+  variable_set('secure_permissions_use_default', 0);
+  variable_set('secure_permissions_verbose', 0);
+
+  // Load our roles and permissions.
+  secure_permissions_rebuild();
+
+  $developer_role = user_role_load_by_name('developer');
+  $site_owner_role = user_role_load_by_name('site_owner');
+  $content_editor_role = user_role_load_by_name('content_editor');
+  $administrator_role = user_role_load_by_name('administrator');
+
+  // Create default users keyed by role id.
+  $default_users = array(
+    $developer_role->rid => array(
+      'matu4291' => 'Matt.Tucker@Colorado.EDU',
+      'crafts' => 'Kevin.Crafts@Colorado.EDU',
+      'daha1836' => 'Damon.Haley@Colorado.EDU',
+      'alne1147' => 'alfredo@Colorado.EDU',
+    ),
+    $administrator_role->rid => array(
+      'brokaw' => 'Annie.Brokaw@Colorado.EDU',
+      'sniderc' => 'Catherine.Snider@Colorado.EDU',
+      'kubie' => 'kubie@Colorado.EDU',
+      'leslie' => 'jon.leslie@Colorado.EDU',
+      'linebarg' => 'joanna.bertrand@Colorado.EDU',
+      'wetu1300' => 'wendy.turnbull@Colorado.EDU',
+    ),
+    $site_owner_role->rid => array(),
+    $content_editor_role->rid => array(),
+  );
+
+  // Final sanity check.
+  _law_users_grant_all_perms($developer_role->rid);
+
+  foreach ($default_users as $rid => $users) {
+    foreach ($users as $name => $mail) {
+      // Create the account.
+      $account = new stdClass();
+      $account->name = $name;
+      $account->mail = $mail;
+      $account->status = 1;
+      $account = user_save($account);
+
+      // Grant user the role.
+      $query = db_insert('users_roles')->fields(array('uid', 'rid'));
+      $query->values(array('uid' => $account->uid, 'rid' => $rid));
+      $query->execute();
+    }
+  }
+}
+
+/**
+ * Grants all perms to specified role ID.
+ *
+ * This is sort of a "last check" just in case we haven't
+ * exported *every* permission.
+ */
+function _law_users_grant_all_perms($rid) {
+  // Rebuild module data.
+  system_rebuild_module_data();
+
+  // Grant every permission to role.
+  $module_info = system_get_info('module');
+  foreach (module_implements('permission') as $module) {
+    $modules[$module] = $module_info[$module]['name'];
+  }
+  $permissions = array();
+  foreach ($modules as $module => $display_name) {
+    $perms = array();
+    $perms = module_invoke($module, 'permission');
+    $permissions += $perms;
+  }
+  if ($rid > 2) {
+    user_role_grant_permissions($rid, array_keys($permissions));
+    return TRUE;
+  }
+  else {
+    // We wont grant perms to anon or auth.. only a new role (>2).
+    return FALSE;
+  }
+}

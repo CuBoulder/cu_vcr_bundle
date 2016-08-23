@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Compliance Requirements feature.
+ */
+
+include_once 'vcr_compliance_requirements.features.inc';

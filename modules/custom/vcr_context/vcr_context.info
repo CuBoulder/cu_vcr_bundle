@@ -1,0 +1,16 @@
+name = VCR Context
+description = Context module code for VCR site.
+core = 7.x
+package = VCR
+php = 5.2.4
+dependencies[] = context
+dependencies[] = ctools
+dependencies[] = menu
+dependencies[] = menu_block
+dependencies[] = views
+features[context][] = home_page
+features[context][] = internal
+features[context][] = ocg_award_lifecycle_menu
+features[context][] = sitewide-minus-internal
+features[ctools][] = context:context:3
+features[features_api][] = api:1

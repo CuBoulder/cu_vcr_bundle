@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Programmatically create VCR menus. Oh Yeah!
+ *
+ * Will create pages, menus and menu items, beans and more.
+ * More power!
+ */
+
+/**
+ * Implements hook_install().
+ */
+function vcr_menu_install() {
+  _vcr_menu_create_menus();
+}
+
+/**
+ * Create custom menus and set secondary menu.
+ */
+function _vcr_menu_create_menus() {
+  $menus = array(
+    array(
+      'menu_name' => 'secondary-menu',
+      'title' => 'Secondary Menu',
+      'description' => '',
+    ),
+    array(
+      'menu_name' => 'education-menu',
+      'title' => 'Eduction & Training',
+      'description' => 'Education & Training menu'),
+    array(
+      'menu_name' => 'iacuc-intranet-menu',
+      'title' => 'IACUC Intranet',
+      'description' => 'IACCUC intranet - only viewable by authenticated users'),
+    array(
+      'menu_name' => 'iacuc-secondary-menu',
+      'title' => 'IACUC Secondary Menu',
+      'description' => 'IACCUC secondary intranet menu - only viewable by authenticated users'),
+
+  );
+  foreach ($menus as $menu) {
+    menu_save($menu);
+  }
+  variable_set('menu_secondary_links_source', 'secondary-menu');
+}

@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * vcr_content.module
+ * Note: this module must be enabled after vcr_content as some of the
+ * parent_mlids won't exist until basic page nodes are created.
+ */
+
+/**
+ * Return a list of configurations for menu blocks.
+ *
+ * Modules that want to have menu block configurations exported to code should
+ * provide them using this hook.
+ *
+ * @see menu_build_tree()
+ */
+function vcr_content_menu_block_blocks() {
+  $footer_link_titles = array(
+    'funding' => 'Funding & Awards',
+    'ocg' => 'OCG (Sponsored Research)',
+    'ori' => 'ORI (Compliance)',
+    'hr' => 'HR Processes',
+    'resources' => 'Resources',);
+  foreach ($footer_link_titles as $label => $link_title) {
+    // Create an object of type SelectQuery.
+    ${"{$label}_pmlid"} = db_select('menu_links', 'm')->condition('m.link_title', "$link_title", '=')->condition('m.menu_name', 'main-menu', '=')->fields('m', array('mlid'))->execute()->fetchField();
+
+  }
+
+  // parent_milds
+  // The array key is the block delta used by menu block.
+  return array(
+    'vcr_content-footer-funding' => array(
+      'menu_name'   => 'main-menu',
+      'parent_mlid' => "$funding_pmlid",
+      'title_link'  => 1,
+      'admin_title' => 'Footer - Funding & Awards',
+      'level'       => 1,
+      'follow'      => 0,
+      'depth'       => 1,
+      'expanded'    => 0,
+      'sort'        => 0,
+    ),
+    'vcr_content-footer-ocg' => array(
+      'menu_name'   => 'main-menu',
+      'parent_mlid' => "$ocg_pmlid",
+      'title_link'  => 1,
+      'admin_title' => 'Footer - OCG',
+      'level'       => 1,
+      'follow'      => 0,
+      'depth'       => 1,
+      'expanded'    => 0,
+      'sort'        => 0,
+    ),
+    'vcr_content-footer-ori' => array(
+      'menu_name'   => 'main-menu',
+      'parent_mlid' => "$ori_pmlid",
+      'title_link'  => 1,
+      'admin_title' => 'Footer - ORI',
+      'level'       => 1,
+      'follow'      => 0,
+      'depth'       => 1,
+      'expanded'    => 0,
+      'sort'        => 0,
+    ),
+    'vcr_content-footer-hr' => array(
+      'menu_name'   => 'main-menu',
+      'parent_mlid' => "$hr_pmlid",
+      'title_link'  => 1,
+      'admin_title' => 'Footer - HR',
+      'level'       => 1,
+      'follow'      => 0,
+      'depth'       => 1,
+      'expanded'    => 0,
+      'sort'        => 0,
+    ),
+    'vcr_content-footer-resources' => array(
+      'menu_name'   => 'main-menu',
+      'parent_mlid' => "$resources_pmlid",
+      'title_link'  => 1,
+      'admin_title' => 'Footer - Resources',
+      'level'       => 1,
+      'follow'      => 0,
+      'depth'       => 1,
+      'expanded'    => 0,
+      'sort'        => 0,
+    ),
+  );
+}

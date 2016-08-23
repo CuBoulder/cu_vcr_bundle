@@ -1,0 +1,5 @@
+name = VCR Menu
+description = Menu and menu blocks for VCR
+core = 7.x
+
+dependencies[] = menu_block

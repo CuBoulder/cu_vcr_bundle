@@ -1,0 +1,14 @@
+name = Sitewide
+core = 7.x
+package = VCR
+php = 5.2.4
+dependencies[] = bean
+dependencies[] = context
+dependencies[] = ctools
+dependencies[] = google_appliance
+dependencies[] = menu
+dependencies[] = menu_block
+dependencies[] = vcr_menu
+features[context][] = pc2tr40fz12bx
+features[ctools][] = context:context:3
+features[features_api][] = api:1

@@ -1,0 +1,7 @@
+span.job-title {
+  font-size: 80%;
+}
+span.phone {
+  white-space: nowrap;
+  display: block;
+}

@@ -1,0 +1,5 @@
+name = VCR Users
+description = Users and permissions for VCR
+core = 7.x
+
+dependencies[] = secure_permissions

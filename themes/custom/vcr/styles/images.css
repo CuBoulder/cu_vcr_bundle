@@ -1,0 +1,128 @@
+/* IMAGES */
+
+.grid-3 .image-grid-3,
+.grid-3 .image-grid-4,
+.grid-3 .image-grid-6,
+.grid-3 .image-grid-9,
+.grid-3 .image-grid-12,
+.grid-4 .image-grid-3,
+.grid-4 .image-grid-4,
+.grid-4 .image-grid-6,
+.grid-4 .image-grid-9,
+.grid-4 .image-grid-12 {
+  height: auto;
+  width: 100%;
+}
+
+.grid-6 .image-grid-3 {
+  height: auto;
+  width: 200px;
+  clear:right;
+}
+.grid-6 .image-grid-4 {
+  height: auto;
+  width: 300px;
+  clear:right;
+}
+.grid-6 .image-grid-6,
+.grid-6 .image-grid-9,
+.grid-6 .image-grid-12 {
+  height: auto;
+  width: 440px;
+}
+
+.grid-9 .image-grid-3 {
+  height: auto;
+  width: 200px;
+  clear:right;
+}
+.grid-9 .image-grid-4 {
+  height: auto;
+  width: 300px;
+  clear:right;
+}
+.grid-9 .image-grid-6 {
+  height: auto;
+  width: 440px;
+  clear:right;
+}
+.grid-9 .image-grid-9,
+.grid-9 .image-grid-12 {
+  height: auto;
+  width: 680px;
+}
+
+.grid-12 .image-grid-3 {
+  height: auto;
+  width: 200px;
+  clear:right;
+}
+.grid-12 .image-grid-4 {
+  height: auto;
+  width: 300px;
+  clear:right;
+}
+.grid-12 .image-grid-6 {
+  height: auto;
+  width: 440px;
+  clear:right;
+}
+.grid-12 .image-grid-9 {
+  height: auto;
+  width: 680px;
+  clear:right;
+}
+.grid-12 .image-grid-12 {
+  height: auto;
+  width: 920px;
+}
+
+.grid-12 .image-square_thumbnail,
+.grid-9 .image-square_thumbnail,
+.grid-8 .image-square_thumbnail {
+  width: 120px;
+  height: 120px;
+}
+.grid-6 .image-square_thumbnail {
+  width: 90px;
+  height: 90px;
+}
+.grid-3 .image-square_thumbnail,
+.grid-4 .image-square_thumbnail{
+  width: 60px;
+  height: 60px;
+}
+
+.image-photo-large {
+  height: auto;
+  margin: 0;
+  width: 920px;
+}
+
+.image-photo-medium {
+  height: auto;
+  width: 480px;
+}
+
+.image-photo-small {
+  height: auto;
+  width: 320px;
+}
+
+.image-photo-thumb {
+  height: auto;
+  width: 160px;
+}
+
+.align-left {
+  float:left;
+  margin:0 20px 20px 0 !important;
+}
+body .content img[style="float:left"] {
+  float:left;
+  margin:0 20px 20px 0;
+}
+body .content img[style="float:right"] {
+  float: right;
+  margin: 0 0 20px 20px;
+}

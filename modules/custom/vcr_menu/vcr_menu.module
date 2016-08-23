@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * vcr_menu.module
+ * Note: this module must be enabled after vcr_content as some of the
+ * parent_mlids won't exist until basic page nodes are created.
+ */
+
+/**
+ * Return a list of configurations for menu blocks.
+ *
+ * Modules that want to have menu block configurations exported to code should
+ * provide them using this hook.
+ *
+ * @see menu_build_tree()
+ */
+function vcr_menu_menu_block_blocks() {
+  // parent_milds
+  // The array key is the block delta used by menu block.
+  return array(
+    'vcr_main-menu' => array(
+      'menu_name'   => 'main-menu',
+      'parent_mlid' => 0,
+      'title_link'  => 0,
+      'admin_title' => 'Main Menu',
+      'level'       => 0,
+      'follow'      => 0,
+      'depth'       => 1,
+      'expanded'    => FALSE,
+      'sort'        => FALSE,
+    ),
+    'vcr_menu-main-subnav' => array(
+      'menu_name'   => 'main-menu',
+      'parent_mlid' => 0,
+      'title_link'  => 0,
+      'admin_title' => '',
+      'level'       => 2,
+      'follow'      => 0,
+      'depth'       => 0,
+      'expanded'    => 0,
+      'sort'        => 0,
+    ),
+    'main-menu-secondary-links' => array(
+      'menu_name'   => 'secondary-menu',
+      'parent_mlid' => 0,
+      'title_link'  => 1,
+      'admin_title' => 'Main Menu secondary links',
+      'level'       => 2,
+      'follow'      => 0,
+      'depth'       => 0,
+      'expanded'    => FALSE,
+      'sort'        => FALSE,
+    ),
+    'main-menu-secondary-links-subnav' => array(
+      'menu_name'   => 'secondary-menu',
+      'parent_mlid' => 0,
+      'title_link'  => 0,
+      'admin_title' => '',
+      'level'       => 2,
+      'follow'      => 0,
+      'depth'       => 0,
+      'expanded'    => 0,
+      'sort'        => 0,
+    ),
+    'vcr-internal-menu' => array(
+      'menu_name'   => 'iacuc-intranet-menu',
+      'parent_mlid' => 0,
+      'title_link'  => FALSE,
+      'admin_title' => 'Internal Menu',
+      'level'       => 0,
+      'follow'      => 0,
+      'depth'       => 2,
+      'expanded'    => FALSE,
+      'sort'        => FALSE,
+    ),
+    'vcr-menu-internal-secondary-lnks' => array(
+      'menu_name'   => 'iacuc-secondary-menu',
+      'parent_mlid' => 0,
+      'title_link'  => 1,
+      'admin_title' => 'Internal secondary links',
+      'level'       => 2,
+      'follow'      => 0,
+      'depth'       => 0,
+      'expanded'    => FALSE,
+      'sort'        => FALSE,
+    ),
+
+  );
+}

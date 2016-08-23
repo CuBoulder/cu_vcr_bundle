@@ -1,0 +1,568 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function vcr_reports_install() {
+  $vocab = (object) array(
+    'name' => 'Report Type',
+    'machine_name' => 'report_type',
+    'description' => 'Categorize reports by Monthly Proposal, Award and Expenditure...',
+  );
+  taxonomy_vocabulary_save($vocab);
+  $vocab = taxonomy_vocabulary_machine_name_load('report_type');
+
+  $terms = array(
+    'Proposal',
+    'Award',
+    'Expenditures by Department',
+    'Expenditures by Sponsor Type',
+    'Awards by Sponsor Type',
+  );
+  foreach ($terms as $key => $term_name) {
+    $term = (object) array(
+      'vid' => $vocab->vid,
+      'name' => $term_name,
+      'weight' => $key,
+    );
+    taxonomy_term_save($term);
+  }
+
+  _vcr_reports_create_report_nodes();
+}
+
+
+/**
+ * Create report nodes from legacy files.
+ */
+function _vcr_reports_create_report_nodes() {
+  // Clear caches so that new node type is available.
+  drupal_static_reset();
+  cache_clear_all();
+  // Don't ask why I have to revert a feature during an install...
+  _vcr_reports_features_revert(array('vcr_reports'));
+  drupal_static_reset();
+  cache_clear_all();
+
+  // Keyed by year
+  $reports = array(
+    '06' => array(
+      'a_apr.xls',
+      'a_aug.xls',
+      'a_dec.xls',
+      'a_feb.xls',
+      'a_jan.xls',
+      'a_jul.xls',
+      'a_jun.xls',
+      'a_mar.xls',
+      'a_may.xls',
+      'a_nov.xls',
+      'a_oct.xls',
+      'a_sep.xls',
+      'd_dec.pdf',
+      'd_jun.pdf',
+      'd_may.pdf',
+      'd_oct.pdf',
+      'p_apr.xls',
+      'p_aug.xls',
+      'p_dec.xls',
+      'p_feb.xls',
+      'p_jan.xls',
+      'p_jul.xls',
+      'p_jun.xls',
+      'p_mar.xls',
+      'p_may.xls',
+      'p_nov.xls',
+      'p_oct.xls',
+      'p_sep.xls',
+      's_aug.pdf',
+      's_dec.pdf',
+      's_jul.pdf',
+      's_jun.pdf',
+      's_may.pdf',
+      's_nov.pdf',
+      's_oct.pdf',
+      's_sep.pdf',
+      't_dec.pdf',
+      't_jun.pdf',
+      't_may.pdf',
+      't_oct.pdf',
+    ),
+    '07' => array(
+      'a_apr.xls',
+      'a_aug.xls',
+      'a_dec.xls',
+      'a_feb.xls',
+      'a_jan.xls',
+      'a_jul.xls',
+      'a_jun.xls',
+      'a_mar.xls',
+      'a_may.xls',
+      'a_nov.xls',
+      'a_oct.xls',
+      'a_sep.xls',
+      'd_apr.pdf',
+      'd_aug.pdf',
+      'd_dec.pdf',
+      'd_feb.pdf',
+      'd_jan.pdf',
+      'd_jul.pdf',
+      'd_jun.pdf',
+      'd_mar.pdf',
+      'd_may.pdf',
+      'd_nov.pdf',
+      'd_oct.pdf',
+      'd_sep.pdf',
+      'p_apr.xls',
+      'p_aug.xls',
+      'p_dec.xls',
+      'p_feb.xls',
+      'p_jan.xls',
+      'p_jul.xls',
+      'p_jun.xls',
+      'p_mar.xls',
+      'p_may.xls',
+      'p_nov.xls',
+      'p_oct.xls',
+      'p_sep.xls',
+      's_apr.pdf',
+      's_aug.pdf',
+      's_dec.pdf',
+      's_feb.pdf',
+      's_jan.pdf',
+      's_jul.pdf',
+      's_jun.pdf',
+      's_mar.pdf',
+      's_may.pdf',
+      's_nov.pdf',
+      's_oct.pdf',
+      's_sep.pdf',
+      't_apr.pdf',
+      't_aug.pdf',
+      't_dec.pdf',
+      't_feb.pdf',
+      't_jan.pdf',
+      't_jul.pdf',
+      't_jun.pdf',
+      't_mar.pdf',
+      't_may.pdf',
+      't_nov.pdf',
+      't_oct.pdf',
+      't_sep.pdf',
+    ),
+    '08' => array(
+      'a_apr.xls',
+      'a_aug.xls',
+      'a_dec.xls',
+      'a_feb.xls',
+      'a_jan.xls',
+      'a_jul.xls',
+      'a_jun.xls',
+      'a_mar.xls',
+      'a_may.xls',
+      'a_nov.xls',
+      'a_oct.xls',
+      'a_sep.xls',
+      'd_apr.pdf',
+      'd_aug.pdf',
+      'd_dec.pdf',
+      'd_feb.pdf',
+      'd_jan.pdf',
+      'd_jul.pdf',
+      'd_jun.pdf',
+      'd_mar.pdf',
+      'd_may.pdf',
+      'd_nov.pdf',
+      'd_oct.pdf',
+      'd_sep.pdf',
+      //'e_jan.pdf',
+      'p_apr.xls',
+      'p_aug.xls',
+      'p_dec.xls',
+      'p_feb.xls',
+      'p_jan.xls',
+      'p_jul.xls',
+      'p_jun.xls',
+      'p_mar.xls',
+      'p_may.xls',
+      'p_nov.xls',
+      'p_oct.xls',
+      'p_sep.xls',
+      's_apr.pdf',
+      's_aug.pdf',
+      's_dec.pdf',
+      's_feb.pdf',
+      's_jan.pdf',
+      's_jul.pdf',
+      's_jun.pdf',
+      's_mar.pdf',
+      's_may.pdf',
+      's_nov.pdf',
+      's_oct.pdf',
+      's_sep.pdf',
+      't_apr.pdf',
+      't_aug.pdf',
+      't_dec.pdf',
+      't_feb.pdf',
+      't_jan.pdf',
+      't_jul.pdf',
+      't_jun.pdf',
+      't_mar.pdf',
+      't_may.pdf',
+      't_nov.pdf',
+      't_oct.pdf',
+      't_sep.pdf',
+    ),
+    '09' => array(
+      'a_apr.xls',
+      'a_aug.xls',
+      'a_dec.xls',
+      'a_feb.xls',
+      'a_jan.xls',
+      'a_jul.xls',
+      'a_jun.xls',
+      'a_mar.xls',
+      'a_may.xls',
+      'a_nov.xls',
+      'a_oct.xls',
+      'a_sep.xls',
+      'd_apr.pdf',
+      'd_aug.pdf',
+      'd_dec.pdf',
+      'd_feb.pdf',
+      'd_jan.pdf',
+      'd_jul.pdf',
+      'd_jun.pdf',
+      'd_mar.pdf',
+      'd_may.pdf',
+      'd_nov.pdf',
+      'd_oct.pdf',
+      'd_sep.pdf',
+      'p_apr.xls',
+      'p_aug.xls',
+      'p_dec.xls',
+      'p_feb.xls',
+      'p_jan.xls',
+      'p_jul.xls',
+      'p_jun.xls',
+      'p_mar.xls',
+      'p_may.xls',
+      'p_nov.xls',
+      'p_oct.xls',
+      'p_sep.xls',
+      's_apr.pdf',
+      's_aug.pdf',
+      's_dec.pdf',
+      's_feb.pdf',
+      's_jan.pdf',
+      's_jul.pdf',
+      's_jun.pdf',
+      's_mar.pdf',
+      's_may.pdf',
+      's_nov.pdf',
+      's_oct.pdf',
+      's_sep.pdf',
+      't_apr.pdf',
+      't_aug.pdf',
+      't_dec.pdf',
+      't_feb.pdf',
+      't_jan.pdf',
+      't_jul.pdf',
+      't_jun.pdf',
+      't_mar.pdf',
+      't_may.pdf',
+      't_nov.pdf',
+      't_oct.pdf',
+      't_sep.pdf',
+    ),
+    '10' => array(
+      'a_apr.xls',
+      'a_aug.xls',
+      'a_dec.xls',
+      'a_feb.xls',
+      'a_jan.xls',
+      'a_jul.xls',
+      'a_jun.xls',
+      'a_mar.xls',
+      'a_may.xls',
+      'a_nov.xls',
+      'a_oct.xls',
+      'a_sep.xls',
+      'd_apr.pdf',
+      'd_aug.pdf',
+      'd_dec.pdf',
+      'd_feb.pdf',
+      'd_jan.pdf',
+      'd_jul.pdf',
+      'd_jun.pdf',
+      'd_mar.pdf',
+      'd_may.pdf',
+      'd_nov.pdf',
+      'd_oct.pdf',
+      'd_sep.pdf',
+      'p_apr.xls',
+      'p_aug.xls',
+      'p_dec.xls',
+      'p_feb.xls',
+      'p_jan.xls',
+      'p_jul.xls',
+      'p_jun.xls',
+      'p_mar.xls',
+      'p_may.xls',
+      'p_nov.xls',
+      'p_oct.xls',
+      'p_sep.xls',
+      's_apr.pdf',
+      's_aug.pdf',
+      's_dec.pdf',
+      's_feb.pdf',
+      's_jan.pdf',
+      's_jun.pdf',
+      's_mar.pdf',
+      's_may.pdf',
+      's_nov.pdf',
+      's_oct.pdf',
+      's_sep.pdf',
+      't_apr.pdf',
+      't_aug.pdf',
+      't_dec.pdf',
+      't_feb.pdf',
+      't_jan.pdf',
+      't_jul.pdf',
+      't_jun.pdf',
+      't_mar.pdf',
+      't_may.pdf',
+      't_nov.pdf',
+      't_oct.pdf',
+      't_sep.pdf',
+    ),
+    '11' => array(
+      'a_apr.xls',
+      'a_aug.xls',
+      'a_dec.xls',
+      'a_feb.xls',
+      'a_jan.xls',
+      'a_jul.xls',
+      'a_jun.xls',
+      'a_mar.xls',
+      'a_may.xls',
+      'a_nov.xls',
+      'a_oct.xls',
+      'a_sep.xls',
+      'd_apr.pdf',
+      'd_aug.pdf',
+      'd_dec.pdf',
+      'd_feb.pdf',
+      'd_jan.pdf',
+      'd_jul.pdf',
+      'd_jun.pdf',
+      'd_mar.pdf',
+      'd_may.pdf',
+      'd_nov.pdf',
+      'd_oct.pdf',
+      'd_sep.pdf',
+      'p_apr.xls',
+      'p_aug.xls',
+      'p_dec.xls',
+      'p_feb.xls',
+      'p_jan.xls',
+      'p_jul.xls',
+      'p_jun.xls',
+      'p_mar.xls',
+      'p_may.xls',
+      'p_nov.xls',
+      'p_oct.xls',
+      'p_sep.xls',
+      's_apr.pdf',
+      's_aug.pdf',
+      's_dec.pdf',
+      's_feb.pdf',
+      's_jan.pdf',
+      's_jul.pdf',
+      's_jun.pdf',
+      's_mar.pdf',
+      's_may.pdf',
+      's_nov.pdf',
+      's_oct.pdf',
+      's_sep.pdf',
+      't_apr.pdf',
+      't_aug.pdf',
+      't_dec.pdf',
+      't_feb.pdf',
+      't_jan.pdf',
+      't_jul.pdf',
+      't_jun.pdf',
+      't_mar.pdf',
+      't_may.pdf',
+      't_nov.pdf',
+      't_oct.pdf',
+      't_sep.pdf',
+    ),
+    '12' => array(
+      'a_apr.xls',
+      'a_aug.xls',
+      'a_dec.xls',
+      'a_feb.xls',
+      'a_jan.xls',
+      'a_jul.xls',
+      'a_jun.xls',
+      'a_mar.xls',
+      'a_may.xls',
+      'a_nov.xls',
+      'a_oct.xls',
+      'a_sep.xls',
+      'd_apr.pdf',
+      'd_aug.pdf',
+      'd_dec.pdf',
+      'd_feb.pdf',
+      'd_jan.pdf',
+      'd_jul.pdf',
+      'd_jun.pdf',
+      'd_mar.pdf',
+      'd_may.pdf',
+      'd_nov.pdf',
+      'd_oct.pdf',
+      'd_sep.pdf',
+      'p_apr.xls',
+      'p_aug.xls',
+      'p_dec.xls',
+      'p_feb.xls',
+      'p_jan.xls',
+      'p_jul.xls',
+      'p_jun.xls',
+      'p_mar.xls',
+      'p_may.xls',
+      'p_nov.xls',
+      'p_oct.xls',
+      'p_sep.xls',
+      's_apr.pdf',
+      's_aug.pdf',
+      's_dec.pdf',
+      's_feb.pdf',
+      's_jan.pdf',
+      's_jul.pdf',
+      's_jun.pdf',
+      's_mar.pdf',
+      's_may.pdf',
+      's_nov.pdf',
+      's_oct.pdf',
+      't_apr.pdf',
+      't_aug.pdf',
+      't_dec.pdf',
+      't_feb.pdf',
+      't_jan.pdf',
+      't_jul.pdf',
+      't_jun.pdf',
+      't_mar.pdf',
+      't_may.pdf',
+      't_nov.pdf',
+      't_oct.pdf',
+      't_sep.pdf',
+    ),
+    '13' => array(
+      'a_jan.xls',
+      'd_jan.pdf',
+      'p_jan.xls',
+      's_jan.pdf',
+      't_jan.pdf',
+    ),
+  );
+  $months = array(
+    '01' => 'jan',
+    '02' => 'feb',
+    '03' => 'mar',
+    '04' => 'apr',
+    '05' => 'may',
+    '06' => 'jun',
+    '07' => 'jul',
+    '08' => 'aug',
+    '09' => 'sep',
+    '10' => 'oct',
+    '11' => 'nov',
+    '12' => 'dec',
+  );
+  $report_types = array(
+    'p' => 'Proposal',
+    'a' => 'Award',
+    'd' => 'Expenditures by Department',
+    't' => 'Expenditures by Sponsor Type',
+    's' => 'Awards by Sponsor Type',
+  );
+  foreach ($report_types as $key => $rt) {
+    $terms = taxonomy_get_term_by_name($rt, 'report_type');
+    foreach ($terms as $t) {
+      $report_types[$key] = $t->tid;
+    }
+  }
+  foreach ($reports as $y => $report_names) {
+    $year = '20' . $y;
+    foreach ($report_names as $report_name) {
+      $report_type_tid = $report_types[substr($report_name, 0, 1)];
+      $month = substr($report_name, 2, 3);
+      // use 10am to hopefully prevent timezones.
+      $created = strtotime("$month 1, $year 10:00am");
+
+      $node = (object) array(
+        'type' => 'report',
+        'uid' => 1,
+        'language' => LANGUAGE_NONE,
+        'created' => $created,
+        'field_report_type' => array(
+          LANGUAGE_NONE => array(
+            0 => array(
+              'tid' => $report_type_tid,
+            ),
+          ),
+        ),
+      );
+      $file_path = drupal_realpath(drupal_get_path('module', 'vcr_reports') . '/files/' . $y .'/' . $report_name);
+      $file = (object) array(
+        'uid' => 1,
+        'uri' => $file_path,
+        'filemime' => file_get_mimetype($file_path),
+        'status' => 1,
+        'display' => 0,
+        'description' => '',
+      );
+
+      // Ensure the directory is there, if not create it.
+      system_check_directory(array('#value' => 'private://reports/legacy/'));
+
+      // Copy the file in to the new location.
+      $file = file_copy($file, 'private://reports/legacy/'.$y.'_'.$report_name);
+
+      // Attach newly created file the our report node.
+      $node->field_file[LANGUAGE_NONE][0] = (array) $file;
+
+      // Set the title of the node.
+      auto_nodetitle_set_title($node);
+      // and save!
+      node_save($node);
+    }
+  }
+}
+
+
+/**
+ * Revert specified features.
+ *
+ * Code mostly taken from drush features.
+ */
+function _vcr_reports_features_revert($modules) {
+  module_load_include('inc', 'features', 'features.export');
+  features_include();
+  foreach ($modules as $module) {
+    if (($feature = feature_load($module, TRUE)) && module_exists($module)) {
+      $components = array();
+      // Forcefully revert all components of a feature.
+      foreach (array_keys($feature->info['features']) as $component) {
+        if (features_hook($component, 'features_revert')) {
+          $components[] = $component;
+        }
+      }
+    }
+    foreach ($components as $component) {
+      features_revert(array($module => array($component)));
+    }
+  }
+}

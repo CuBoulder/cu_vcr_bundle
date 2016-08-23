@@ -1,0 +1,1014 @@
+<?php
+
+/**
+ * @file
+ * Programmatically create VCR content. Oh Yeah!
+ *
+ * Will create pages, menus and menu items, beans and more.
+ * More power!
+ */
+
+/**
+ * Implements hook_install().
+ */
+function vcr_content_install() {
+  // VCR-13
+  variable_set('pathauto_node_pattern', '[node:menu-link:parents:join-path]/[node:title]');
+  variable_set('pathauto_node_page_pattern', '[node:field_privacy]/[node:menu-link:parents:join-path]/[node:title]');
+  _vcr_content_create_taxonomy_terms();
+  _vcr_content_main_page_nodes();
+  _vcr_create_ocg_contact_page_menu_item();
+  _vcr_content_secondary_page_nodes();
+  _vcr_content_intranet_page_nodes();
+  _vcr_content_create_bean_blocks_install();
+  _vcr_content_create_ocg_menu();
+  _vcr_content_blocktheme();
+  _vcr_content_grid_size_blocks();
+  _vcr_content_create_education_menu_items();
+  _vcr_content_final();
+}
+
+/**
+ * Final setup for content.
+ */
+function _vcr_content_final() {
+  $home_nid = _vcrNidByTitle('Home', NULL);
+  $home_node = node_load($home_nid);
+  foreach ($home_node->menu_node_links as $mlid => $item) {
+    // Delete the node menu link item.
+    menu_link_delete($mlid);
+  }
+  // Create a new menu item for the homepage.
+  $menu_item = array(
+    'link_path' => '<front>',
+    'link_title' => 'Home',
+    'weight' => -50,
+    'menu_name' => 'main-menu',
+    'plid' => 0,
+  );
+  menu_link_save($menu_item);
+  // Set the homepage to the homepage node.
+  variable_set('site_frontpage', 'node/' . $home_nid);
+
+  // Create a new menu item for the homepage in the intranet secondary menu.
+  $iacuc_intranet_nid = _vcrNidByTitle('Animal Care & Use (IACUC)', 'ORI (Compliance)', $menu_name = 'main-menu');
+  $imenu_item = array(
+    'link_path' => "node/$iacuc_intranet_nid",
+    'link_title' => 'IACUC Public Site',
+    'weight' => -50,
+    'menu_name' => 'iacuc-secondary-menu',
+    'plid' => 0,
+  );
+  menu_link_save($imenu_item);
+}
+
+/**
+ * Create page nodes within main-menu.
+ */
+function _vcr_content_main_page_nodes() {
+  $nodes = array(
+    '0' => array(
+      'title' => 'Home',
+      'body' => "The Office of the Vice Chancellor for Research maintains this website in support of the world-closs research  endeavors being conducted ot CU-Boulder. You con find here all the reseorch-related administrative resources under our purview os well os links to other resources that ore handled at the CU-System level or other venues. <a href='/'>See more about the research infrastructure</a>."),
+    '1' => array(
+      'wb_section' => TRUE,
+      'title' => 'Funding & Awards',
+      'body' => "<p>The Office of the Vice Chancellor for Research coordinates the <a href='/foo'>Distinguished Research Lecture</a>, <a href='/foo'>Faculty Conference Awards</a>, the <a href='/foo'>Innovative Seed Grant Program</a> and through its <a href='/foo'>Office of Contracts and Grants</a>, all external funding sources.<h3>Finding External Funding</h3><p>The fallowing sites and resources serve as databases of international, national, regional, and local external funding opportunities far fellowships and grants.</p><ul><li><a href='/foo'>Grants.gov</a></li><li><a href='/foo/'>SPINPlus</a></li></ul><p>Throughought the year, the OVCR administers <a href='foo'>Limited Campus Competitions</a> when the external agency only permits a limited number of nominees from CU Baulder.</p><h3>Additional Online Resources</h3><ul><li><a href='/foo'>Funding Sources and Grant Writing</a></li><li>See the Annual Register of Grant Support, The Foundation 1000, and the Directory  of Grants in the Humanities, as well as other book resources at Norlin Library.</li></ul>",
+      'children' => array(
+        '0' => array(
+          'title' => 'Distinguished Research Lecture',
+          'children' => array('0' => array('title' => 'Past Recipients'))),
+        '1' => array('title' => 'Faculty Conference Awards'),
+        '2' => array(
+          'title' => 'Innovative Seed Grant Program',
+          'children' => array(
+            '0' => array('title' => 'Apply'),
+            '1' => array('title' => 'Success Stories'),),),
+        '3' => array(
+          'title' => 'Limited Campus Competitions',
+          'children' => array('0' => array('title' => 'Recurring & Past Competitions')),),
+        '4' => array('title' => 'Funding Sources and Grant Writing'),
+        '5' => array('title' => 'Book Resources'),),),
+    '2' => array(
+      'wb_section' => TRUE,
+      'title' => 'OCG (Sponsored Research)',
+      'children' => array(
+        '0' => array(
+          'title' => 'Getting Started',
+          'chidren' => array(
+            '0' => array('title' => 'External Funding Opportunities'),
+            '1' => array('title' => 'Opportunity Types & Implications Thereof'),),),
+        '1' => array(
+          'title' => 'Proposal Preparation & Submission',
+          'children' => array(
+            '0' => array('title' => 'Budget Development'),
+            '1' => array('title' => 'Budget Documentation'),
+            '2' => array(
+              'title' => 'Proposal Documents',
+              'children' => array(
+                '0' => array('title' => 'NSF'),
+                '1' => array('title' => 'NIH'),
+                '2' => array('title' => 'NASA'),
+                '3' => array('title' => 'Various - grants.gov'),),),),),
+        '2' => array(
+          'title' => 'Award Review & Acceptance',
+          'children' => array(
+            '0' => array('title' => 'Grants'),
+            '1' => array('title' => 'Contacts'),
+            '2' => array('title' => 'Subrecipient Issuance'),),),
+        '3' => array(
+          'title' => 'Award Management',
+          'children' => array('0' => array('title' => 'Subrecipient Monitoring')),),
+        '4' => array('title' => 'Award Closeout'),
+        '5' => array(
+          'title' => 'Resources',
+          'children' => array(
+            '0' => array('title' => 'Researcher FAQs'),
+            '1' => array('title' => 'Forms'),
+            '2' => array('title' => 'Templates'),
+            '3' => array('title' => 'Policies & Manuals'),
+            '4' => array('title' => 'Reports'),
+            '5' => array('title' => 'Outreach & Training'),
+            '6' => array('title' => 'Federal Sponsor Links'),
+            '7' => array('title' => 'Reference Guide'),
+            '8' => array('title' => 'Assurance/Certification Statements'),
+            '9' => array('title' => 'Responsibilities Matrix'),
+            '10' => array(
+              'title' => 'eRA',
+              'children' => array(
+                '0' => array('title' => 'FileMaker'),
+                '1' => array('1' => array('title' => 'InfoEd')),),),),),
+        '6' => array(
+          'title' => 'About Us',
+          'children' => array('0' => array('title' => 'Bios')),),),),
+    '3' => array(
+      'wb_section' => TRUE,
+      'title' => 'ORI (Compliance)',
+      'children' => array(
+        '0' => array(
+          'wb_section' => TRUE,
+          'title' => 'Animal Care & Use (IACUC)',
+          'children' => array(
+            '0' => array(
+              'title' => 'About Us',
+              'children' => array(
+                '0' => array('title' => 'Policy Statement'),
+                '1' => array('title' => 'FAQs'),),),
+            '1' => array(
+              'title' => 'Getting Started',
+              'children' => array(
+                '0' => array('title' => 'New Investigators'),
+                '1' => array('title' => 'Investigator Responsibilities'),
+                '2' => array('title' => 'Grants & Protocols'),),
+              '2' => array(
+                'title' => 'Protocols',
+                'children' => array(
+                  '0' => array('title' => 'Submit'),
+                  '1' => array('title' => 'Maintain Approval'),
+                  '2' => array('title' => 'Renew'),
+                  '3' => array('title' => 'Close'),),),
+              '3' => array(
+                'title' => 'Regulations & Policies',
+                'children' => array(
+                  '0' => array('title' => 'Regulations'),
+                  '1' => array('title' => 'CU Plicies'),
+                  '2' => array('title' => 'Newsletter'),),),
+              '4' => array('title' => 'Occupational Health & Safety'),
+              '5' => array(
+                'title' => 'Resources',
+                'children' => array(
+                  '0' => array('title' => 'Forms'),
+                  '1' => array('title' => 'Glossary'),),),
+              '6' => array('title' => 'Training'),
+              '7' => array('title' => 'Contact Us'),
+              '8' => array(
+                'title' => 'Intranet',
+                'children' => array(
+                  '0' => array('title' => 'Policies'),
+                  '1' => array('title' => 'Training'),),),),),),
+        '1' => array(
+          'wb_section' => TRUE,
+          'title' => 'Human Research & IRB',
+          'children' => array(
+            '0' => array('title' => 'About Us'),
+            '1' => array(
+              'title' => 'Getting Started',
+              'children' => array(
+                '0' => array('title' => 'Does my research require IRB review?'),
+                '1' => array('title' => 'Investigator Manual'),
+                '2' => array('title' => 'Roles & Responsibilities'),
+                '3' => array('title' => 'CITI Training'),
+                '4' => array('title' => 'Review Categories'),
+                '5' => array('title' => 'Submission Types'),
+                '6' => array('title' => 'Submission Timeline'),),),
+            '2' => array(
+              'title' => 'Submit for IRB Review',
+              'children' => array(
+                '0' => array('title' => 'Submission Guides'),
+                '1' => array('title' => 'eRA FAQs'),
+                '2' => array('title' => 'Check Review Status'),),),
+            '3' => array(
+              'title' => 'Education & Outreach',
+              'children' => array('0' => array('title' => 'Newsletters')),),
+            '4' => array(
+              'title' => 'Investigator Resources',
+              'children' => array(
+                '0' => array('title' => 'Forms & Templates'),
+                '1' => array('title' => 'Guidance Documents'),
+                '2' => array('title' => 'Regulatory Links'),),),
+            '5' => array(
+              'title' => 'Panel Member Resources',
+              'children' => array(
+                '0' => array('title' => 'Reviewer Checklists'),
+                '1' => array('title' => 'Reviewer Guides'),),),
+            '6' => array(
+              'title' => 'Contact Us',),),),
+        '2' => array(
+          'wb_section' => TRUE,
+          'title' => 'Export Controls',
+          'children' => array(
+            '0' => array(
+              'title' => 'Education & Outreach',
+              'children' => array(
+                '0' => array('title' => 'Outline Cources'),
+                '1' => array('title' => 'Outreah'),),),
+            '1' => array('title' => 'Forms'),
+            '2' => array(
+              'title' => 'Guidance',
+              'children' => array(
+                '0' => array(
+                  'title' => 'Biological Agents',
+                  'children' => array(
+                    '0' => array('title' => 'Human & Animal Pathogens'),
+                    '1' => array('title' => 'Animal Pathogens'),
+                    '2' => array('title' => 'Genetic Elements & Genetically-modified Organisms'),
+                    '3' => array('title' => 'Plant Pathogens'),
+                    '4' => array('title' => 'Vacinnes, Immunotoxins, Medical Products, Diagnostic & Food Testing Kits'),),),
+                '1' => array('title' => 'Cloud Computing'),
+                '2' => array('title' => 'Definitions'),
+                '3' => array('title' => 'Foreign Visitors'),
+                '4' => array('title' => 'Hiring & Visas'),
+                '5' => array('title' => 'International Travel'),
+                '6' => array('title' => 'Publishing Study Results'),
+                '7' => array('title' => 'Shipping & Exporting'),
+                '8' => array('title' => 'Working with OCG/Sponsored Research'))),
+            '3' => array(
+              'title' => 'Regulations & Policies',),),),
+        '3' => array(
+          'wb_section' => TRUE,
+          'title' => 'Controlled Substances',
+          'children' => array(
+            '1' => array('title' => 'Registration'),
+            '2' => array('title' => 'Policies & Guidelines'),
+            '3' => array('title' => 'Forms'),),),
+        '4' => array(
+          'wb_section' => TRUE,
+          'title' => 'Conflicts of Interest & Commitment',
+          'children' => array(
+            '0' => array('title' => 'Polices & Procedures'),
+            '1' => array('title' => 'Disclosure Form (DEPA)'),
+            '2' => array('title' => 'Forms & Checklists'),
+            '3' => array(
+              'title' => 'Public Health Services Agencies / NIH Requirements',
+              'children' => array(
+                '0' => array('title' => 'Travel'),),),
+            '4' => array('title' => 'Education & Outreach'),),),
+        '5' => array(
+          'wb_section' => TRUE,
+          'title' => 'Responsible Research',
+          'children' => array(
+            '0' => array(
+              'title' => 'Training',
+              'children' => array(
+                '0' => array('title' => 'NSF Awards'),
+                '1' => array('title' => 'NIH Awards'),
+                '2' => array('title' => 'On-line Training'),
+                '3' => array('title' => 'Classroom Training'),),),
+            '1' => array(
+              'title' => 'Research Misconduct',
+              'children' => array(
+                '0' => array('title' => 'Procedures & Guidelines'),
+                '1' => array('title' => 'Making an Allegation'),),),
+            '2' => array('title' => 'Contact Us'),),),),),
+    '4' => array(
+      'wb_section' => TRUE,
+      'title' => 'HR Processes',
+      'children' => array(
+        '0' => array(
+          'title' => 'Research Associate Faculty Series',
+          'children' => array(
+            '0' => array('title' => 'Training'),
+            '1' => array('title' => 'Benefits & Leave'),
+            '2' => array('title' => 'Merit Increase Cycle (October-September)'),),),
+        '1' => array(
+          'title' => 'Research Professor Series',
+          'children' => array(
+            '0' => array('title' => 'Training'),
+            '1' => array('title' => 'Benefits & Leave'),
+            '2' => array('title' => 'Merit Increase Cycle (October-September)'),),),
+        '2' => array('title' => 'Post-doc Fellowships'),
+        '3' => array('title' => 'Exempt Professionals'),
+        '4' => array('title' => 'Payroll Liaison Information'),),),
+    '5' => array(
+      'wb_section' => TRUE,
+      'title' => 'Resources ~α',
+      'children' => array(
+        '0' => array('title' => 'Education & Training'),
+        '1' => array('title' => 'Electronic Research Administration'),
+        '2' => array('title' => 'Policies'),
+        '3' => array('title' => 'Reports & Strategic Planning'),),),);
+  _vcr_content_recursive_tree_of_nodes($nodes, 'main-menu');
+}
+
+/**
+ * Need to create menu item for view page now that we can get the parent mlid.
+ */
+function _vcr_create_ocg_contact_page_menu_item() {
+  $parent_nid = _vcrNidByTitle('About Us', 'OCG (Sponsored Research)');
+  $mlid = db_select('menu_links', 'm')->condition('m.link_path', "node/$parent_nid", '=')->condition('m.menu_name', 'main-menu', '=')->fields('m', array('mlid'))->execute()->fetchField();
+  $item = array(
+    'link_path' => 'ocg-sponsored-research/about-us/contact-us',
+    'link_title' => 'Contact Us',
+    'plid' => "$mlid",
+    'weight' => '-10',
+    'menu_name' => 'main-menu',
+  );
+  menu_link_save($item);
+}
+
+/**
+ * Create page nodes within secondary menu.
+ */
+function _vcr_content_secondary_page_nodes() {
+  $nodes = array(
+    '0' => array(
+      'title' => 'About Us',
+      'children' => array(
+        '0' => array('title' => 'Meet the Vice Chancellor'),
+        '1' => array('title' => 'Donor Opportunities'),),),);
+  _vcr_content_recursive_tree_of_nodes($nodes, 'secondary-menu');
+}
+
+/**
+ * Create page nodes within secondary menu.
+ */
+function _vcr_content_intranet_page_nodes() {
+  $nodes = array(
+    '0' => array('title' => 'IACUC Intranet homepage', 'privacy' => '1'),
+    '1' => array('title' => 'Policies', 'privacy' => '1'),
+    '2' => array('title' => 'Training', 'privacy' => '1'),);
+  _vcr_content_recursive_tree_of_nodes($nodes, 'iacuc-intranet-menu');
+}
+
+
+/**
+ * Recursively create nodes in to a tree within a given menu.
+ */
+function _vcr_content_recursive_tree_of_nodes($nodes, $menu_name, $plid = 0, $wb_section = FALSE) {
+  $weight = 0;
+  foreach ($nodes as $elem) {
+    $node_title = $elem['title'];
+    $node = new StdClass();
+    $node->title = $node_title;
+    if (isset($elem['body'])) {
+      $node->body[LANGUAGE_NONE][0]['value'] = $elem['body'];
+    }
+    else {
+      $node->body[LANGUAGE_NONE][0]['value'] = "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec hendrerit tempor tellus. Donec pretium posuere tellus. Proin quam nisl, tincidunt et, mattis eget, convallis nec, purus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla posuere. Donec vitae dolor. Nullam tristique diam non turpis. Cras placerat accumsan nulla. Nullam rutrum. Nam vestibulum accumsan nisl.</p>
+<p>Pellentesque dapibus suscipit ligula. Donec posuere augue in quam. Etiam vel tortor sodales tellus ultricies commodo. Suspendisse potenti. Aenean in sem ac leo mollis blandit. Donec neque quam, dignissim in, mollis nec, sagittis eu, wisi. Phasellus lacus. Etiam laoreet quam sed arcu. Phasellus at dui in ligula mollis ultricies. Integer placerat tristique nisl. Praesent augue. Fusce commodo. Vestibulum convallis, lorem a tempus semper, dui dui euismod elit, vitae placerat urna tortor vitae lacus. Nullam libero mauris, consequat quis, varius et, dictum id, arcu. Mauris mollis tincidunt felis. Aliquam feugiat tellus ut neque. Nulla facilisis, risus a rhoncus fermentum, tellus tellus lacinia purus, et dictum nunc justo sit amet elit.</p>";
+    }
+    $node->body[LANGUAGE_NONE][0]['format']  = 'wysiwyg';
+    if (isset($elem['privacy'])) {
+      $node->field_privacy[LANGUAGE_NONE][0]['tid'] = $elem['privacy'];
+    }
+    $node->type = 'page';
+    $node->menu = array(
+      'menu_name' => $menu_name,
+      'plid' => $plid,
+      'link_title' => $node_title,
+      'enabled' => TRUE,
+      'weight' => $weight,
+    );
+    $node->language = LANGUAGE_NONE;
+    $node->uid = 1;
+
+    if ($wb_section) {
+      $node->workbench_access = array($wb_section);
+    }
+
+    node_save($node);
+    // If wb_section is true, create the section.
+    if ($elem['wb_section'] == TRUE) {
+      $section = array(
+        'access_id' => $node->menu['mlid'],
+        'access_scheme' => 'menu',
+        'access_type' => 'menu',
+        'access_type_id' => $menu_name,
+      );
+      workbench_access_section_save($section);
+      $wb_section = $node->menu['mlid'];
+      // And resave the section node.
+      $node->workbench_access = array($wb_section);
+      node_save($node);
+    }
+    // Something about all this workbench code doesnt like workbench_access_node_insert and it's insistance on running workbench_access_node_delete().
+    // To avoid this, I simply commented out that line of code during the site install only to quickly add the line back.
+    workbench_access_reset_tree();
+    if ($wb_section && !$elem['wb_section']) {
+      $record = array(
+        'nid' => $node->nid,
+        'access_id' => $wb_section,
+        'access_scheme' => 'menu',
+      );
+      drupal_write_record('workbench_access_node', $record);
+    }
+    workbench_access_reset_tree();
+    if (isset($elem['children'])) {
+      $parent_mlid = $node->menu['mlid'];
+      if (is_array($elem['children'])) {
+        _vcr_content_recursive_tree_of_nodes($elem['children'], $menu_name, $parent_mlid, $wb_section);
+      }
+    }
+    $weight++;
+  }
+}
+
+/**
+ * This site is full of beans.
+ *
+ * All kinds of beans!
+ *
+ * @return bool
+ *   TRUE if beans are digested, and FALSE otherwise.
+ */
+function _vcr_content_create_bean_blocks_install() {
+
+  // VCR-5
+  $footer_content  = "<a href='/vcr'>Research Administration & Support</a>";
+  $footer_content .= "<br />A service of the Office of the Vice Chancellor for Research";
+  $footer_content .= "<br /><a href='/vcr/about-us'>About Us</a> | <a href='/vcr/contact-us'>Contact Us</a>";
+  _vcr_content_create_bean_block('Footer Bean', 'footer_content', $footer_content, '<none>');
+
+  // Let's bake beans.
+  $text_bean_content = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.";
+
+  // VCR-4
+  _vcr_content_create_bean_block('footer_button_researcher', 'researcher_bean', "<a href='/vcr/find_researcher'><span class='button_header'>Search VIVO<br/></span>Research and expertise across CU-Boulder.</a>", '<none>');
+  _vcr_content_create_bean_block('footer_button_institutes', 'institutes_bean', "<a href='http://colorado.edu/research/research-institutes' target='_black'><span class='button_header'>Institutues</span>Our 11 research institutes conduct more than half the sponsored research at CU-Boulder.</a>", '<none>');
+  _vcr_content_create_bean_block('footer_button_centers', 'centers_bean', "<a href='http://colorado.edu/research/research-centers' target='_black'><span class='button_header'>Centers</span>Nearly lO research centers span the campus, covering a broad range  of topics.</a>", '<none>');
+  _vcr_content_create_bean_block('footer_button_computing', 'computing_bean', "<a href='http://www.rc.colorado.edu' target='_black'><span class='button_header'>Research Computing</span>A carefully integrated cyberinfrastructure supports CU-Boulder research.</a>", '<none>');
+
+  // VCR-48
+  $ocg_contact_body  = "<ul><li><a href='about'>Find funding to</a></li>";
+  $ocg_contact_body .= "<li><a href='about'>Get more details on preparing a proposal</a></li></ul>";
+  $contact_ocg = _vcr_content_create_bean_block("OCG Contact Bean", 'contact_ocg', $ocg_contact_body, "Contact OCG to:");
+  _vcr_create_bean_ref('OCG (Sponsored Research)', 'top', $contact_ocg, 'inner_content');
+
+  // VCR-53
+  $ocg_button_contact_us_filter = _vcr_content_create_bean_block('OCG Contact Us Button Filtered', 'ocg_button_contact_us_filter', "<a href='/vcr/contact#target'><span class='button_header'>Contact us with questions</span>regarding Proposal Preparation & Submission</a>", '<none>');
+  _vcr_create_bean_ref('Proposal Preparation & Submission', 'OCG (Sponsored Research)', $ocg_button_contact_us_filter, 'right_sidebar');
+
+  // VCR-54
+  $ocg_button_contact_us = _vcr_content_create_bean_block('OCG Contact Us Button', 'ocg_button_contact_us', "<a href='/vcr/contact'><span class='button_header'>Contact Us</span>$text_bean_content</a>", '<none>');
+  _vcr_create_bean_ref('Forms', 'Resources', $ocg_button_contact_us, 'right_sidebar');
+
+  // VCR-51
+  _vcr_create_bean_ref('Getting Started', 'OCG (Sponsored Research)', $ocg_button_contact_us, 'right_sidebar');
+
+  // VCR-59
+  $iacuc_button_investigator = _vcr_content_create_bean_block('New Investigator Button', 'iacuc_button_investigator', "<a href='/vcr/new-investigator'><span class='button_header'>Are you a new investigator?</span>$text_bean_content</a>", '<none>');
+  _vcr_create_bean_ref('Animal Care & Use (IACUC)', 'ORI (Compliance)', $iacuc_button_investigator, 'right_sidebar', 0);
+
+  $iacuc_intranet_nid = _vcrNidByTitle('IACUC Intranet homepage', 'top', $menu_name = 'iacuc-intranet-menu');
+  $iacuc_button_researcher = _vcr_content_create_bean_block('Researcher Login Button', 'iacuc_button_researcher', "<a href='/vcr/user/login?destination=/node/$iacuc_intranet_nid'><span class='button_header'>IACUC Researcher Login</span>$text_bean_content</a>", '<none>');
+  _vcr_create_bean_ref('Animal Care & Use (IACUC)', 'ORI (Compliance)', $iacuc_button_researcher, 'right_sidebar', 1);
+
+  // VCR-60
+  $iacuc_button_era = _vcr_content_create_bean_block('Future IACUC eRA Button', 'iacuc_button_era', "<a href='https://era.cu.edu/'><span class='button_header'>Access eRA</span>$text_bean_content</a>", '<none>');
+  _vcr_create_bean_ref('Animal Care & Use (IACUC)', 'ORI (Compliance)', $iacuc_button_era, 'right_sidebar', 2);
+
+  // VCR-70
+  $button_irb_policies = _vcr_content_create_bean_block('IRB Policies and Procedures Button', 'button_irb_policies', "<a href='/vcr/irb_policies'><span class='button_header'>Policies & Procedures</span>Download the IRB Policies & Procedures</a>", '<none>');
+  _vcr_create_bean_ref('Human Research & IRB', 'ORI (Compliance)', $button_irb_policies, 'right_sidebar', 0);
+
+  // VCR-71
+  $irb_button_era = _vcr_content_create_bean_block('IRB eRA Button', 'irb_button_era', "<a href='https://era.cu.edu/'><span class='button_header'>Access eRA</span>$text_bean_content</a>", '<none>');
+  _vcr_create_bean_ref('Human Research & IRB', 'ORI (Compliance)', $irb_button_era, 'right_sidebar', 1);
+
+  // VCR-81
+  $substances_contact_bean = _vcr_content_create_bean_block('Substances Contact Bean', 'substances_contact_bean', "<h3>Animal Research</h3><br />Dr. Albert Petkus<br /><a href='mailto:albert.petkus@colorado.edu'>albert.petkus@colorado.edu</a><h3>Human Research</h3>Dr. Claire Dunne<br /><a href='mailto:claire.dunne@colorado.edu'>Claire.Dunne@colorado.edu</a><h3>Other</h3>Joe  Rosse<br />Director of the Office of Research Integrity<br /><a href='mailto:Joseph.Rosse@colorado.edu'>Joseph.Rosse@colorado.edu</a>", 'Contact us with questions regarding controlled substances use in:');
+  _vcr_create_bean_ref('Controlled Substances', 'ORI (Compliance)', $substances_contact_bean, 'right_sidebar', 0);
+
+  // VCR-83
+  $coic_contact_bean = _vcr_content_create_bean_block('COIC Contact Bean', 'coic_contact_bean', "PAMELA ROSSE<br />Compliance Director<br />303-492-3024<br />Pamela.Rosse@colorado.edu<br />coi@colarado.edu<br />", 'Contact COIC');
+  _vcr_create_bean_ref('Conflicts of Interest & Commitment', 'ORI (Compliance)', $coic_contact_bean, 'right_sidebar', 0);
+
+    $ec_contact_bean = _vcr_content_create_bean_block('Export Controls Contact Bean', 'ec_contact_bean', "LINDA MORRIS<br />303-492-2889<br />Linda.Morris@colorado.edu<br />", 'Contact Export Controls');
+  _vcr_create_bean_ref('Export Controls', 'ORI (Compliance)', $ec_contact_bean, 'right_sidebar', 0);
+
+  // VCR-87
+  $rr_contact_bean = _vcr_content_create_bean_block('RR Contact Bean', 'rr_contact_bean', "<h3>RESPONSIBLE CONDUCT OF RESEARCH</h3>Dale Mood<br /><a href='mailto:rcr@colorado.edu'>rcr@colorado.edu</a><h3>RESEARCH MISCONDUCT</h3>Professor Allan Franklin<br />Chair<br />303-492-8610<br /><a href='mailto:Allan.Franklin@colorado.edu'>Allan.Franklin@colorado.edu</a><p>Joe  Rosse<br />Director of the Office of Research Integrity<br /><a href='mailto:Joseph.Rosse@colorado.edu'>Joseph.Rosse@colorado.edu</a>", 'Contact us with questions regarding');
+  _vcr_create_bean_ref('Responsible Research', 'ORI (Compliance)', $rr_contact_bean, 'right_sidebar', 0);
+
+  // VCR-88
+  $hr_contact_bean = _vcr_content_create_bean_block('HR Contact Bean', 'hr_contact_bean', "SHERYL A JENSEN<br />Assistant to (Personnel Officer) the Vice Chancellor for Research<br />303-492-7099<br /><a href='mailto:Jensensa@colorado.edu'>Jensensa@colorado.edu</a><p>DARYL KOHLERSCHMIDT<br />Assistant to Sheryl Jensen<br />303-492-8986<br /><a href='mailto:Darxl.Kohlerschmidt@colorado.edu'>Darxl.Kohlerschmidt@colorado.edu</a>", 'Contact us with questions regarding HR Processes');
+  _vcr_create_bean_ref('HR Processes', 'top', $hr_contact_bean, 'right_sidebar', 0);
+
+  // VCR-98
+  $funding_helpful_lnks_bean = _vcr_content_create_bean_block('Helpful Links bean', 'funding_helpful_lnks_bean', "<ul><li><a href='/foo'>Boulder Faculty Assembly Awards for Excellence</a></li><li><a href='/foo'>CARTSS Scholar/Seed/Teaching Grants</a></li><li><a href='/foo'>Center far Asian Studies Faculty Support</a></li><li><a href='/foo'>Center far Humanities and the Arts </a></li><li><a href='/foo'>Graduate Committee an the Arts & Humanities</a></li><li><a href='/foo'>Graduate Student Funding</a></li><li><a href='/foo'>Hazel Barnes Prize</a></li><li><a href='/foo'>OCG (Sponsored Research) Training Presentations</a></li></ul>", 'Helpful Links');
+  _vcr_create_bean_ref('Funding & Awards', 'top', $funding_helpful_lnks_bean, 'right_sidebar', 0);
+
+  $default_events_content = array(
+    'category' => '30-0',
+    'expire' => 'yes',
+    'link' => array(
+      'url' => 'http://events.colorado.edu',
+      'title' => 'View All',
+    ),
+    'number' => '5',
+    'subcategories' => 'N',
+    'template' => '44',
+    'type' => 'N',
+  );
+  _vcr_content_create_bean_block('Education Calendar bean', 'homepage_training', $default_events_content, 'Upcoming Education & Training', 'cu_events_calendar_block');
+  _vcr_content_create_bean_block('OCG Calendar bean', 'ocg_training', $default_events_content, 'Upcoming OCG Outreach & Training', 'cu_events_calendar_block');
+  _vcr_content_create_bean_block('IACUC calendar bean', 'iacuctraining', $default_events_content, 'Upcoming IACUC Training', 'cu_events_calendar_block');
+
+}
+
+/**
+ * Programmatically creates a bean.
+ *
+ * This method will be used a lot!
+ *
+ * @param string $label
+ *   A string containing a bean label.
+ *
+ * @param string $delta
+ *   A string containing the machine_name of this bean.
+ *
+ * @param string $default_content
+ *   A string containing the body text of bean
+ *
+ * @param string $title
+ *   A string containing a bean title.
+ *
+ * @param string $bean_type
+ *   A string containing a bean type.
+ *  Defaults to 'block'.
+ *
+ * @return bool
+ *   TRUE if bean is created, and FALSE if it isn't.
+ */
+function _vcr_content_create_bean_block($label, $delta, $default_content, $title, $bean_type = 'block') {
+  module_load_include('module', 'bean');
+  $values = array(
+    'delta' => "$delta",
+    'label' => "$label",
+    'title' => "$title",
+    'type' => "$bean_type",
+    'view_mode' => 'default',);
+
+  if ($bean_type == 'block') {
+    $values['field_block_text'][LANGUAGE_NONE][0]['value'] = $default_content;
+    $values['field_block_text'][LANGUAGE_NONE][0]['format'] = 'wysiwyg';
+  }
+  elseif ($bean_type == 'cu_events_calendar_block') {
+    $values['field_event_category'][LANGUAGE_NONE][0]['value'] = $default_content['category'];
+    $values['field_event_expire'][LANGUAGE_NONE][0]['value'] = $default_content['expire'];
+    $values['field_event_link'][LANGUAGE_NONE][0]['url'] = $default_content['link']['url'];
+    $values['field_event_link'][LANGUAGE_NONE][0]['title'] = $default_content['link']['title'];
+    $values['field_event_number'][LANGUAGE_NONE][0]['value'] = $default_content['number'];
+    $values['field_event_subcategories'][LANGUAGE_NONE][0]['value'] = $default_content['subcategories'];
+    $values['field_event_template'][LANGUAGE_NONE][0]['value'] = $default_content['template'];
+    $values['field_event_type'][LANGUAGE_NONE][0]['value'] = $default_content['type'];
+  }
+  $bean = bean_create($values);
+  $bean->save();
+  return $bean;
+}
+
+/**
+ * Create entity_reference between page and bean.
+ *
+ * @param string $page_title
+ *   The title of page node to look up
+ *
+ * @param string $parent_page_title
+ *   The title of parent page of the node to look up.
+ *   This is required to make sure we get a unique page node.
+ *   Set to 'top' if the plid should be 0 (i.e.) top menu parent item
+ *
+ * @param array $bean
+ *   The bean object to reference
+ *
+ * @param string $region
+ *   Specifies the region entity_reference field
+ *  Right Sidebar, Inner Content, Header, Footer
+ *
+ * @param string $order
+ *   the array order, which defaults to 0
+ *
+ * @return bool
+ *   TRUE if page node is saved, and FALSE if it isn't.
+ */
+function _vcr_create_bean_ref($page_title, $parent_page_title, $bean, $region, $order = 0) {
+  $nid = _vcrNidByTitle($page_title, $parent_page_title, $menu_name = 'main-menu');
+  $query = new EntityFieldQuery();
+  $entities = $query->entityCondition('entity_type', 'node')
+  ->propertyCondition('type', 'page')
+  ->propertyCondition('nid', "$nid")
+  ->execute();
+  try {
+    if (!empty($entities['node'])) {
+      $node = node_load(array_shift(array_keys($entities['node'])));
+      $node->{"field_{$region}"}[LANGUAGE_NONE][$order]['target_id'] = $bean->bid;
+      node_save($node);
+      $success = TRUE;
+    }
+    else {
+      throw new Exception('Could not look up page node');
+    }
+  }
+  catch (Exception $e) {
+    print "Could not create a reference between basic page $page_title and " . $bean->title . "\n$e\n";
+  }
+}
+
+
+/**
+ * Creates menu items within the ocg menu.
+ */
+function _vcr_content_create_ocg_menu() {
+  $menus = array(
+    array(
+      'menu_name' => 'award-menu',
+      'title' => 'Award Menu',
+    ),
+  );
+  foreach ($menus as $menu) {
+    menu_save($menu);
+  }
+
+  try {
+    $getting_started_nid = _vcrNidByTitle('Getting Started', 'OCG (Sponsored Research)');
+    $proposal_prep_nid = _vcrNidByTitle('Proposal Preparation & Submission', 'OCG (Sponsored Research)');
+    $award_review_nid = _vcrNidByTitle('Award Review & Acceptance', 'OCG (Sponsored Research)');
+    $award_management_nid = _vcrNidByTitle('Award Management', 'OCG (Sponsored Research)');
+    $award_closeout_nid = _vcrNidByTitle('Award Closeout', 'OCG (Sponsored Research)');
+  }
+  catch (Exception $e) {
+    print "Bad error, dude, $e\n";
+  }
+
+  $menu_name = 'award-menu';
+  $items = array(
+    array(
+      'link_path' => 'node/' . $getting_started_nid,
+      'link_title' => 'Getting Started',
+      'menu_name' => $menu_name,
+      'weight' => 0,
+    ),
+    array(
+      'link_path' => 'node/' . $proposal_prep_nid,
+      'link_title' => 'Proposal Preparation & Submission',
+      'menu_name' => $menu_name,
+      'weight' => 1,
+    ),
+    array(
+      'link_path' => 'node/' . $award_review_nid,
+      'link_title' => 'Award Review & Acceptance',
+      'menu_name' => $menu_name,
+      'weight' => 2,
+    ),
+    array(
+      'link_path' => 'node/' . $award_management_nid,
+      'link_title' => 'Award Management',
+      'menu_name' => $menu_name,
+      'weight' => 3,
+    ),
+    array(
+      'link_path' => 'node/' . $award_closeout_nid,
+      'link_title' => 'Award Closeout',
+      'menu_name' => $menu_name,
+      'weight' => 4,
+    ),
+  );
+  foreach ($items as $item) {
+    menu_link_save($item);
+  }
+}
+
+/**
+ * Configures block themes.
+ *
+ * @return bool
+ *   TRUE if the address is in a valid format, and FALSE if it isn't.
+ */
+function _vcr_content_blocktheme() {
+  $block_theme = array(
+
+    'menu-award-menu' => 'blockstylesteps',
+    'bean-bean-funding_helpful_lnks_bean' => 'blockstyle3',
+    'bean-bean-ocg_button_contact_us' => 'blockstyle3',
+    'bean-bean-button_irb_policies' => 'blockstyle3',
+    'bean-bean-irb_button_era' => 'blockstyle3',
+    'bean-bean-rr_contact_bean' => 'blockstyle3',
+    'bean-bean-hr_contact_bean' => 'blockstyle3',
+    'bean-bean-iacuc_button_investigator' => 'blockstyle3',
+    'bean-bean-iacuc_button_researcher' => 'blockstyle3',
+    'bean-bean-iacuc_button_era' => 'blockstyle3',
+    'bean-bean-contact_ocg' => 'blockstyle3',
+    'bean-bean-coic_contact_bean' => 'blockstyle3',
+    'bean-bean-ec_contact_bean' => 'blockstyle3',
+  );
+  variable_set('blocktheme', $block_theme);
+}
+
+/**
+ * Configure grid size blocks.
+ *
+ * @return bool
+ *   TRUE if the address is in a valid format, and FALSE if it isn't.
+ */
+function _vcr_content_grid_size_blocks() {
+  $grid_size_blocks = array(
+    'footer_button_researcher' => 'grid-3',
+    'bean-researcher_bean' => 'grid-3',
+    'bean-institutes_bean' => 'grid-3',
+    'bean-computing_bean' => 'grid-3',
+    'bean-centers_bean' => 'grid-3',
+    'menu_block-vcr_content-footer-funding' => 'grid-2',
+    'menu_block-vcr_content-footer-ocg' => 'grid-2',
+    'menu_block-vcr_content-footer-ori' => 'grid-2',
+    'menu_block-vcr_content-footer-hr' => 'grid-2',
+    'menu_block-vcr_content-footer-resources' => 'grid-2',
+  );
+
+  $grid_size_clear = array(
+    'footer_button_researcher' => '0',
+    'bean-researcher_bean' => '0',
+    'bean-institutes_bean' => '0',
+    'bean-computing_bean' => '0',
+    'bean-centers_bean' => '0',
+  );
+  variable_set('grid_size_blocks', $grid_size_blocks);
+  variable_set('grid_size_clear', $grid_size_clear);
+}
+
+/**
+ * Look up page node nid by title.
+ *
+ * Only returns nid if there was one unique result.
+ * This function only works well if the pages are uniquly named to begin with.
+ * There is too much hassel to find every child page that might have the same
+ * name for its parent menu page.
+ *
+ * If there are a bunch of page titles that are the same, which also happen to
+ * have parents that are not unique, it is not easy to find the exact page
+ * nid that one is actually looking for.  It's better to just have unqiue page
+ * names during the site install portion of development.
+ *
+ * @param string $page_title
+ *   The title of the node to look up.
+ *
+ * @param string $parent_page_title
+ *   The parent page title.  It finds the FIRST result of a matching
+ *   parent_page_title.  So if these aren't unique, you're *SCREWED*, as
+ *   the code will try to set a plid of the very first parent_page_title
+ *   it finds.
+ *   At this point (and without further logic),
+ *   this param is really just an extra sanity check to make
+ *   sure you're getting the nid of the corret page.
+ *   If not set or set to 'top', plid will be 0.
+ *
+ * @param string $menu_name
+ *   defaults to 'main_menu'
+ *
+ * @return nid
+ *   nid if query only produced one result, exception error otherwise
+ */
+function _vcrNidByTitle($page_title, $parent_page_title, $menu_name = 'main-menu') {
+  if (!(isset($parent_page_title)) || ($parent_page_title == 'top')) {
+    $plid = '0';
+  }
+  else {
+    // We need to look up the plid for $parent_page_title.
+    $query = new EntityFieldQuery();
+    $entities = $query->entityCondition('entity_type', 'node')
+      ->propertyCondition('type', 'page')
+      ->propertyCondition('title', "$parent_page_title")
+      ->execute();
+    // We take the first parent found with this title.
+    $parent_node = node_load(array_shift(array_keys($entities['node'])));
+    if (!is_object($parent_node)) {
+      throw new Exception('Parameter must be page node object.');
+    }
+    $parent_nid = $node->nid;
+    foreach ($parent_node->menu_node_links as $mlid => $data) {
+      if ($data->{'menu_name'} != "$menu_name") {
+        continue;
+      }
+      // We set the plid to the parent nodes mlid.
+      $plid = $data->{'mlid'};
+      if (!(isset($plid))) {
+        throw new Exception('We could find now plid for $parent_page_title.');
+      }
+    }
+  }
+  // Now let's look up the actual node we want the nid of.
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'page')
+    ->propertyCondition('title', "$page_title");
+  $entities = $query->execute();
+  if (!empty($entities['node'])) {
+    $nids = array_keys($entities['node']);
+    if (count($nids) > '1') {
+      foreach (node_load_multiple($nids) as $node) {
+        $nid = $node->nid;
+        MENU: foreach ($node->menu_node_links as $mlid => $data) {
+          if (($data->{'menu_name'} != "$menu_name") || ($data->{'plid'} != "$plid")) {
+            continue;
+          }
+          return $nid;
+        }
+      }
+      throw new Exception("No pages named $page_title had a plid of $plid in menu $menu_name");
+    }
+    else {
+      $node = node_load(array_shift(array_keys($entities['node'])));
+      if (!is_object($node)) {
+        throw new Exception('Parameter must be page node object.');
+      }
+      $nid = $node->nid;
+      foreach ($node->menu_node_links as $mlid => $data) {
+        if (($data->{'menu_name'} != "$menu_name") || ($data->{'plid'} != "$plid")) {
+          continue;
+        }
+        return $nid;
+      }
+      throw new Exception("There was one result for $page_title but its plid was not $plid");
+    }
+  }
+  else {
+    throw new Exception("No results whatsoever for $page_title");
+  }
+}
+
+/**
+ * Create vocabularies.
+ */
+function _vcr_content_create_taxonomy_vocabularies() {
+  // Private Audience.
+  taxonomy_vocabulary_save((object) array(
+      'name' => 'Private Audience',
+      'machine_name' => 'private_audience',
+    ));
+
+  // Award Lifecycle - applies to people and OCG files.
+  // taxonomy_vocabulary_save((object) array(
+  //     'name' => 'Award Lifecycle',
+  //     'machine_name' => 'award_lifecycle',
+  //   ));
+}
+
+
+/**
+ * Creates default taxonomy terms.
+ */
+function _vcr_content_create_taxonomy_terms() {
+  $internal_terms = array(
+    'internal' => array(),
+  );
+
+  $units = array(
+    'Funding & Awards' => array(),
+    'OCG (Sponsored Research)' => array(),
+    'ORI (Compliance)' => array(
+      'Animal Care & Use (IACUC)' => array(),
+      'Human Research & IRB' => array(),
+      'Export Controls' => array(),
+      'Controlled Substances' => array(),
+      'Conflicts of Interest & Commitment' => array(),
+      'Responsible Research' => array(),),
+    'HR Processes' => array(),
+    'VC Research Admin' => array(),);
+
+  $awards = array(
+    'Getting Started' => array(),
+    'Proposal Preparation & Submission' => array(),
+    'Award Review & Acceptance' => array(),
+    'Award Management' => array(),
+    'Award Closeout' => array(),);
+
+  _vcr_content_create_taxonomy_terms_insert('private_audience', $internal_terms);
+  _vcr_content_create_taxonomy_terms_insert('vcr_unit', $units);
+  _vcr_content_create_taxonomy_terms_insert('award_lifecycle', $awards);
+}
+
+/**
+ * Function to categories insert into different taxonomy terms.
+ *
+ * @param string $vocab_name
+ *   Machine name of vocablulary
+ *
+ * @param array $terms
+ *   Array of terms.
+ *
+ * @param string $parent
+ *   Name of parent term.
+ *
+ * * @return bool
+ *   TRUE if hierarchy was created.
+ */
+function _vcr_content_create_taxonomy_terms_insert($vocab_name, $terms, $parent = NULL) {
+  if (!(isset($parent))) {
+    $parent = 0;
+  }
+  $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
+  // Get the vocabulary ID.
+  $vid = $vocab->vid;
+  foreach ($terms as $parent_name => $children) {
+    // Create the parent term.
+    $term = new stdClass();
+    $term->name = $parent_name;
+    $term->vid = $vid;
+    $term->parent = $parent;
+    $status = taxonomy_term_save($term);
+    if (!$status) {
+      throw new Exception("Could not save taxonomy term $parent_name with these params -> vid: $vid parent: $parent");
+    }
+    if (isset($children)) {
+      _vcr_content_create_taxonomy_terms_insert($vocab_name, $children, $term->tid);
+    }
+  }
+  return TRUE;
+}
+
+/**
+ * Creates menu items within the ocg menu.
+ */
+function _vcr_content_create_education_menu_items() {
+  try {
+    $ocg_nid = _vcrNidByTitle('OCG (Sponsored Research)', 'top');
+    $iacuc_nid = _vcrNidByTitle('Animal Care & Use (IACUC)', 'ORI (Compliance)');
+    $irb_nid = _vcrNidByTitle('Human Research & IRB', 'ORI (Compliance)');
+    $ec_nid = _vcrNidByTitle('Export Controls', 'ORI (Compliance)');
+    $conflicts_nid = _vcrNidByTitle('Conflicts of Interest & Commitment', 'ORI (Compliance)');
+    $responisble_nid = _vcrNidByTitle('Responsible Research', 'ORI (Compliance)');
+    $view_all_nid = _vcrNidByTitle('Education & Training', 'Resources ~α');
+  }
+  catch (Exception $e) {
+    print "Bad error, dude, $e\n";
+  }
+
+  $menu_name = 'education-menu';
+  $items = array(
+    array(
+      'link_path' => 'node/' . $ocg_nid,
+      'link_title' => 'OCG (Sponsored Research)',
+      'menu_name' => $menu_name,
+      'weight' => 0,
+    ),
+    array(
+      'link_path' => 'node/' . $iacuc_nid,
+      'link_title' => 'Animal Care & Use (IACUC)',
+      'menu_name' => $menu_name,
+      'weight' => 1,
+    ),
+    array(
+      'link_path' => 'node/' . $irb_nid,
+      'link_title' => 'Human Research & IRB',
+      'menu_name' => $menu_name,
+      'weight' => 2,
+    ),
+    array(
+      'link_path' => 'node/' . $ec_nid,
+      'link_title' => 'Export Controls',
+      'menu_name' => $menu_name,
+      'weight' => 3,
+    ),
+    array(
+      'link_path' => 'node/' . $conflicts_nid,
+      'link_title' => 'Conflicts of Interest and Commitment',
+      'menu_name' => $menu_name,
+      'weight' => 4,
+    ),
+    array(
+      'link_path' => 'node/' . $responsible_nid,
+      'link_title' => 'Responsible Research',
+      'menu_name' => $menu_name,
+      'weight' => 5,
+    ),
+    array(
+      'link_path' => 'node/' . $view_all_nid,
+      'link_title' => 'View All',
+      'menu_name' => $menu_name,
+      'weight' => 6,
+    ),
+  );
+  foreach ($items as $item) {
+    menu_link_save($item);
+  }
+}

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the VCR Context feature.
+ */
+
+include_once 'vcr_context.features.inc';
