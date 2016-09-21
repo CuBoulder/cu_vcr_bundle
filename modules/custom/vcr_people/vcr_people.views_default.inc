@@ -269,7 +269,7 @@ function vcr_people_views_default_views() {
     5 => 0,
     6 => 0,
   );
-  $handler->display->display_options['filters']['field_person_department_tid']['vocabulary'] = 'departments';
+  $handler->display->display_options['filters']['field_person_department_tid']['vocabulary'] = 'department';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -347,7 +347,7 @@ function vcr_people_views_default_views() {
     5 => 0,
     6 => 0,
   );
-  $handler->display->display_options['filters']['field_person_department_tid']['vocabulary'] = 'departments';
+  $handler->display->display_options['filters']['field_person_department_tid']['vocabulary'] = 'department';
   $handler->display->display_options['path'] = 'ocg/about-us/contact-us';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Contact Us';

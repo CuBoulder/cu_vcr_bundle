@@ -26,6 +26,24 @@ function vcr_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
+        'bean-guidance-tool' => array(
+          'module' => 'bean',
+          'delta' => 'guidance-tool',
+          'region' => 'sidebar_second',
+          'weight' => '-10',
+        ),
+        'menu-menu-hp-main-unit-menu' => array(
+          'module' => 'menu',
+          'delta' => 'menu-hp-main-unit-menu',
+          'region' => 'sidebar_second',
+          'weight' => '-9',
+        ),
+        'bean-hp-education' => array(
+          'module' => 'bean',
+          'delta' => 'hp-education',
+          'region' => 'sidebar_second',
+          'weight' => '-8',
+        ),
         'views-homepage_updates-block' => array(
           'module' => 'views',
           'delta' => 'homepage_updates-block',
@@ -143,29 +161,11 @@ function vcr_context_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'menu_block-vcr_main-menu' => array(
-          'module' => 'menu_block',
-          'delta' => 'vcr_main-menu',
-          'region' => 'navigation',
-          'weight' => '-10',
-        ),
-        'menu-secondary-menu' => array(
-          'module' => 'menu',
-          'delta' => 'secondary-menu',
-          'region' => 'secondary-navigation',
-          'weight' => '-10',
-        ),
         'menu_block-vcr_menu-main-subnav' => array(
           'module' => 'menu_block',
           'delta' => 'vcr_menu-main-subnav',
           'region' => 'sidebar_second',
           'weight' => '-10',
-        ),
-        'menu_block-main-menu-secondary-links-subnav' => array(
-          'module' => 'menu_block',
-          'delta' => 'main-menu-secondary-links-subnav',
-          'region' => 'sidebar_second',
-          'weight' => '-9',
         ),
       ),
     ),
