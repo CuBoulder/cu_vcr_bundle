@@ -91,7 +91,7 @@ function cu_vcr_bundle_secure_permissions($role) {
  *
  * Redirect /vcr/* to docroot.
  *
- * @return array
+ * @return array $items
  */
 function cu_vcr_bundle_menu() {
   $items = array();
@@ -101,7 +101,6 @@ function cu_vcr_bundle_menu() {
     'description' => 'Forward /vcr/* to docroot.',
     'type' => MENU_CALLBACK,
     'page callback' => 'cu_vcr_bundle_legacy_redirect',
-    //'page arguments' => array(1),
     'access callback' => TRUE,
   );
 
