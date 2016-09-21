@@ -16,9 +16,8 @@ dependencies[] = vcr_reports
 dependencies[] = vcr_sitewide
 dependencies[] = vcr_users
 
-;dependencies[] = taxonomy_access
 dependencies[] = better_exposed_filters
 
-bundle_contrib_packages = taxonomy_access, better_exposed_filters
+bundle_contrib_packages = better_exposed_filters
 
 
