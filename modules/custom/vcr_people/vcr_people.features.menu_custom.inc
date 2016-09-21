@@ -20,6 +20,5 @@ function vcr_people_menu_default_menu_custom() {
   // Included for use with string extractors like potx.
   t('Quick Links');
 
-
   return $menus;
 }

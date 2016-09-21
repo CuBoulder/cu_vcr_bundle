@@ -20,6 +20,13 @@ function vcr_reports_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'auto_entitylabel_pattern_node_report';
+  $strongarm->value = '[node:field_report_type] [node:created:custom:Y-m-d]';
+  $export['auto_entitylabel_pattern_node_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'field_bundle_settings_node__report';
   $strongarm->value = array(
     'view_modes' => array(),

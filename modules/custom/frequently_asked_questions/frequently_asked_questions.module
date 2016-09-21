@@ -1,0 +1,32 @@
+<?php
+/**
+ * @file
+ * Code for the Frequently Asked Questions feature.
+ */
+
+include_once('frequently_asked_questions.features.inc');
+
+
+function frequently_asked_questions_page_alter(&$page) {
+  // Add slider css
+  drupal_add_css(drupal_get_path('module', 'frequently_asked_questions') . '/faq.css');
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ *
+ * Let Drupal know that we've got node--frequently_asked_questions.tpl.php in our module directory.
+ */
+function frequently_asked_questions_theme_registry_alter(&$theme_registry) {
+  $module_path = drupal_get_path('module', 'frequently_asked_questions');
+  $theme_registry_copy = $theme_registry;
+  _theme_process_registry($theme_registry_copy, 'phptemplate', 'theme_engine', 'node', $module_path);
+  $theme_registry += array_diff_key($theme_registry_copy, $theme_registry);
+  $hooks = array('node');
+  foreach ($hooks as $h) {
+	  if (isset($theme_registry[$h]['theme paths'])) {
+	    $first_element = array_shift($theme_registry[$h]['theme paths']);
+	    array_unshift($theme_registry[$h]['theme paths'], array_shift($theme_registry[$h]['theme paths']), $module_path);
+  	}
+  }
+}

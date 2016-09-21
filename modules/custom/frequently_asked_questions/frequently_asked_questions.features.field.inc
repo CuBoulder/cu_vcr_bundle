@@ -1,143 +1,86 @@
 <?php
 /**
  * @file
- * vcr_policies.features.field.inc
+ * frequently_asked_questions.features.field.inc
  */
 
 /**
  * Implements hook_field_default_fields().
  */
-function vcr_policies_field_default_fields() {
+function frequently_asked_questions_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'bean-policies_list-field_policy_filter_term'.
-  $fields['bean-policies_list-field_policy_filter_term'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '-1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_policy_filter_term',
-      'foreign keys' => array(
-        'tid' => array(
-          'columns' => array(
-            'tid' => 'tid',
-          ),
-          'table' => 'taxonomy_term_data',
-        ),
-      ),
-      'indexes' => array(
-        'tid' => array(
-          0 => 'tid',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'taxonomy',
-      'settings' => array(
-        'allowed_values' => array(
-          0 => array(
-            'vocabulary' => 'vcr_unit',
-            'parent' => '0',
-          ),
-        ),
-        'options_list_callback' => '_taxonomy_access_term_options',
-      ),
-      'translatable' => '0',
-      'type' => 'taxonomy_term_reference',
-    ),
-    'field_instance' => array(
-      'bundle' => 'policies_list',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'module' => 'taxonomy',
-          'settings' => array(),
-          'type' => 'taxonomy_term_reference_plain',
-          'weight' => '0',
-        ),
-      ),
-      'entity_type' => 'bean',
-      'fences_wrapper' => 'no_wrapper',
-      'field_name' => 'field_policy_filter_term',
-      'label' => 'Term',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 0,
-        'module' => 'options',
-        'settings' => array(
-          'autocomplete_path' => 'taxonomy/autocomplete',
-          'size' => 60,
-        ),
-        'type' => 'options_buttons',
-        'weight' => '-4',
-      ),
-    ),
-  );
-
-  // Exported field: 'field_collection_item-field_policy_contact-field_policy_contact_email'.
-  $fields['field_collection_item-field_policy_contact-field_policy_contact_email'] = array(
+  // Exported field: 'field_collection_item-field_question_answer-field_faq_answer'.
+  $fields['field_collection_item-field_question_answer-field_faq_answer'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_policy_contact_email',
-      'foreign keys' => array(),
-      'indexes' => array(),
+      'field_name' => 'field_faq_answer',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
       'locked' => '0',
-      'module' => 'email',
-      'settings' => array(),
+      'module' => 'text',
+      'settings' => array(
+        'profile2_private' => FALSE,
+      ),
       'translatable' => '0',
-      'type' => 'email',
+      'type' => 'text_long',
     ),
     'field_instance' => array(
-      'bundle' => 'field_policy_contact',
+      'bundle' => 'field_question_answer',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'hidden',
-          'module' => 'email',
+          'module' => 'text',
           'settings' => array(),
-          'type' => 'email_default',
+          'type' => 'text_default',
           'weight' => '1',
         ),
       ),
       'entity_type' => 'field_collection_item',
-      'fences_wrapper' => 'span',
-      'field_name' => 'field_policy_contact_email',
-      'label' => 'Email',
+      'field_name' => 'field_faq_answer',
+      'label' => 'Answer',
       'required' => 0,
       'settings' => array(
+        'text_processing' => '1',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'email',
+        'module' => 'text',
         'settings' => array(
-          'size' => '60',
+          'rows' => '5',
         ),
-        'type' => 'email_textfield',
-        'weight' => '32',
+        'type' => 'text_textarea',
+        'weight' => '2',
       ),
     ),
   );
 
-  // Exported field: 'field_collection_item-field_policy_contact-field_policy_contact_name'.
-  $fields['field_collection_item-field_policy_contact-field_policy_contact_name'] = array(
+  // Exported field: 'field_collection_item-field_question_answer-field_faq_question'.
+  $fields['field_collection_item-field_question_answer-field_faq_question'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_policy_contact_name',
+      'field_name' => 'field_faq_question',
       'foreign keys' => array(
         'format' => array(
           'columns' => array(
@@ -155,12 +98,13 @@ function vcr_policies_field_default_fields() {
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
+        'profile2_private' => FALSE,
       ),
       'translatable' => '0',
       'type' => 'text',
     ),
     'field_instance' => array(
-      'bundle' => 'field_policy_contact',
+      'bundle' => 'field_question_answer',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -174,9 +118,8 @@ function vcr_policies_field_default_fields() {
         ),
       ),
       'entity_type' => 'field_collection_item',
-      'fences_wrapper' => 'span',
-      'field_name' => 'field_policy_contact_name',
-      'label' => 'Name',
+      'field_name' => 'field_faq_question',
+      'label' => 'Question',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -189,77 +132,13 @@ function vcr_policies_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '31',
+        'weight' => '1',
       ),
     ),
   );
 
-  // Exported field: 'field_collection_item-field_policy_contact-field_policy_contact_phone'.
-  $fields['field_collection_item-field_policy_contact-field_policy_contact_phone'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_policy_contact_phone',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(
-        'max_length' => '255',
-      ),
-      'translatable' => '0',
-      'type' => 'text',
-    ),
-    'field_instance' => array(
-      'bundle' => 'field_policy_contact',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => '2',
-        ),
-      ),
-      'entity_type' => 'field_collection_item',
-      'fences_wrapper' => 'span',
-      'field_name' => 'field_policy_contact_phone',
-      'label' => 'Phone',
-      'required' => 0,
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '33',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-policy-body'.
-  $fields['node-policy-body'] = array(
+  // Exported field: 'node-frequently_asked_questions-body'.
+  $fields['node-frequently_asked_questions-body'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -287,11 +166,11 @@ function vcr_policies_field_default_fields() {
         'max_length' => '',
         'profile2_private' => FALSE,
       ),
-      'translatable' => '1',
+      'translatable' => '0',
       'type' => 'text_with_summary',
     ),
     'field_instance' => array(
-      'bundle' => 'policy',
+      'bundle' => 'frequently_asked_questions',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
@@ -329,13 +208,84 @@ function vcr_policies_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
+        'weight' => '4',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-frequently_asked_questions-field_faq_display'.
+  $fields['node-frequently_asked_questions-field_faq_display'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_faq_display',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'value' => array(
+          0 => 'value',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+          0 => 'Accordion',
+          1 => 'Anchor Links',
+        ),
+        'allowed_values_function' => '',
+        'allowed_values_php' => '',
+      ),
+      'translatable' => '0',
+      'type' => 'list_integer',
+    ),
+    'field_instance' => array(
+      'bundle' => 'frequently_asked_questions',
+      'default_value' => array(
+        0 => array(
+          'value' => '0',
+        ),
+      ),
+      'default_value_function' => '',
+      'default_value_php' => '',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_key',
+          'weight' => '4',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'fences_wrapper' => 'no_wrapper',
+      'field_name' => 'field_faq_display',
+      'label' => 'Display FAQs as',
+      'required' => 1,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_buttons',
         'weight' => '2',
       ),
     ),
   );
 
-  // Exported field: 'node-policy-field_footer'.
-  $fields['node-policy-field_footer'] = array(
+  // Exported field: 'node-frequently_asked_questions-field_footer'.
+  $fields['node-frequently_asked_questions-field_footer'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -377,16 +327,19 @@ function vcr_policies_field_default_fields() {
       'type' => 'entityreference',
     ),
     'field_instance' => array(
-      'bundle' => 'policy',
+      'bundle' => 'frequently_asked_questions',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '8',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 5,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -412,13 +365,13 @@ function vcr_policies_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'entityreference_autocomplete',
-        'weight' => '12',
+        'weight' => '10',
       ),
     ),
   );
 
-  // Exported field: 'node-policy-field_header'.
-  $fields['node-policy-field_header'] = array(
+  // Exported field: 'node-frequently_asked_questions-field_header'.
+  $fields['node-frequently_asked_questions-field_header'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -460,16 +413,19 @@ function vcr_policies_field_default_fields() {
       'type' => 'entityreference',
     ),
     'field_instance' => array(
-      'bundle' => 'policy',
+      'bundle' => 'frequently_asked_questions',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '7',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 7,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -495,13 +451,13 @@ function vcr_policies_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'entityreference_autocomplete',
-        'weight' => '11',
+        'weight' => '9',
       ),
     ),
   );
 
-  // Exported field: 'node-policy-field_inner_content'.
-  $fields['node-policy-field_inner_content'] = array(
+  // Exported field: 'node-frequently_asked_questions-field_inner_content'.
+  $fields['node-frequently_asked_questions-field_inner_content'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -543,16 +499,19 @@ function vcr_policies_field_default_fields() {
       'type' => 'entityreference',
     ),
     'field_instance' => array(
-      'bundle' => 'policy',
+      'bundle' => 'frequently_asked_questions',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '6',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 8,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -578,13 +537,13 @@ function vcr_policies_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'entityreference_autocomplete',
-        'weight' => '10',
+        'weight' => '8',
       ),
     ),
   );
 
-  // Exported field: 'node-policy-field_override_right_sidebar'.
-  $fields['node-policy-field_override_right_sidebar'] = array(
+  // Exported field: 'node-frequently_asked_questions-field_override_right_sidebar'.
+  $fields['node-frequently_asked_questions-field_override_right_sidebar'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
@@ -610,7 +569,7 @@ function vcr_policies_field_default_fields() {
       'type' => 'list_boolean',
     ),
     'field_instance' => array(
-      'bundle' => 'policy',
+      'bundle' => 'frequently_asked_questions',
       'default_value' => array(
         0 => array(
           'value' => 0,
@@ -621,9 +580,10 @@ function vcr_policies_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
+          'module' => 'list',
           'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '4',
+          'type' => 'list_default',
+          'weight' => 9,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -647,283 +607,48 @@ function vcr_policies_field_default_fields() {
           'display_label' => 0,
         ),
         'type' => 'options_onoff',
-        'weight' => '8',
+        'weight' => '6',
       ),
     ),
   );
 
-  // Exported field: 'node-policy-field_policy_contact'.
-  $fields['node-policy-field_policy_contact'] = array(
+  // Exported field: 'node-frequently_asked_questions-field_question_answer'.
+  $fields['node-frequently_asked_questions-field_question_answer'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_policy_contact',
+      'field_name' => 'field_question_answer',
       'foreign keys' => array(),
       'indexes' => array(),
       'locked' => '0',
       'module' => 'field_collection',
       'settings' => array(
-        'hide_blank_items' => 1,
+        'hide_blank_items' => TRUE,
         'path' => '',
+        'profile2_private' => FALSE,
       ),
       'translatable' => '0',
       'type' => 'field_collection',
     ),
     'field_instance' => array(
-      'bundle' => 'policy',
+      'bundle' => 'frequently_asked_questions',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'field_collection',
           'settings' => array(
+            'add' => 'Add',
+            'delete' => 'Delete',
+            'description' => TRUE,
+            'edit' => 'Edit',
             'view_mode' => 'full',
           ),
-          'type' => 'field_collection_fields',
-          'weight' => '10',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'fences_wrapper' => 'div',
-      'field_name' => 'field_policy_contact',
-      'label' => 'Policy Contact',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 0,
-        'module' => 'field_collection',
-        'settings' => array(),
-        'type' => 'field_collection_embed',
-        'weight' => '14',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-policy-field_policy_file'.
-  $fields['node-policy-field_policy_file'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_policy_file',
-      'foreign keys' => array(
-        'fid' => array(
-          'columns' => array(
-            'fid' => 'fid',
-          ),
-          'table' => 'file_managed',
-        ),
-      ),
-      'indexes' => array(
-        'fid' => array(
-          0 => 'fid',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'file',
-      'settings' => array(
-        'display_default' => 0,
-        'display_field' => 0,
-        'uri_scheme' => 'public',
-      ),
-      'translatable' => '0',
-      'type' => 'file',
-    ),
-    'field_instance' => array(
-      'bundle' => 'policy',
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'module' => 'file',
-          'settings' => array(),
-          'type' => 'file_default',
-          'weight' => '1',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'fences_wrapper' => 'no_wrapper',
-      'field_name' => 'field_policy_file',
-      'label' => 'Policy File',
-      'required' => 0,
-      'settings' => array(
-        'description_field' => 0,
-        'file_directory' => '',
-        'file_extensions' => 'txt pdf doc docx xls xlsx ppt pptx rtf',
-        'max_filesize' => '',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'file',
-        'settings' => array(
-          'insert' => 0,
-          'insert_absolute' => FALSE,
-          'insert_class' => '',
-          'insert_default' => array(
-            0 => 'auto',
-          ),
-          'insert_styles' => array(
-            0 => 'auto',
-          ),
-          'insert_width' => '',
-          'progress_indicator' => 'throbber',
-        ),
-        'type' => 'file_generic',
-        'weight' => '3',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-policy-field_policy_url'.
-  $fields['node-policy-field_policy_url'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_policy_url',
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'locked' => '0',
-      'module' => 'link',
-      'settings' => array(
-        'attributes' => array(
-          'class' => '',
-          'rel' => '',
-          'target' => 'default',
-        ),
-        'display' => array(
-          'url_cutoff' => 80,
-        ),
-        'enable_tokens' => 1,
-        'title' => 'optional',
-        'title_maxlength' => 128,
-        'title_value' => '',
-        'url' => 0,
-      ),
-      'translatable' => '0',
-      'type' => 'link_field',
-    ),
-    'field_instance' => array(
-      'bundle' => 'policy',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'module' => 'link',
-          'settings' => array(),
-          'type' => 'link_default',
-          'weight' => '2',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'fences_wrapper' => 'no_wrapper',
-      'field_name' => 'field_policy_url',
-      'label' => 'Policy URL',
-      'required' => 0,
-      'settings' => array(
-        'attributes' => array(
-          'class' => '',
-          'configurable_title' => 0,
-          'rel' => '',
-          'target' => 'default',
-          'title' => '',
-        ),
-        'display' => array(
-          'url_cutoff' => '80',
-        ),
-        'enable_tokens' => 1,
-        'title' => 'none',
-        'title_maxlength' => '128',
-        'title_value' => '',
-        'url' => 0,
-        'user_register_form' => FALSE,
-        'validate_url' => 0,
-      ),
-      'widget' => array(
-        'active' => 0,
-        'module' => 'link',
-        'settings' => array(),
-        'type' => 'link_field',
-        'weight' => '4',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-policy-field_privacy'.
-  $fields['node-policy-field_privacy'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_privacy',
-      'foreign keys' => array(
-        'tid' => array(
-          'columns' => array(
-            'tid' => 'tid',
-          ),
-          'table' => 'taxonomy_term_data',
-        ),
-      ),
-      'indexes' => array(
-        'tid' => array(
-          0 => 'tid',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'taxonomy',
-      'settings' => array(
-        'allowed_values' => array(
-          0 => array(
-            'vocabulary' => 'private_audience',
-            'parent' => '0',
-          ),
-        ),
-        'options_list_callback' => '_taxonomy_access_term_options',
-      ),
-      'translatable' => '0',
-      'type' => 'taxonomy_term_reference',
-    ),
-    'field_instance' => array(
-      'bundle' => 'policy',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
+          'type' => 'field_collection_view',
           'weight' => '3',
         ),
         'teaser' => array(
@@ -934,25 +659,24 @@ function vcr_policies_field_default_fields() {
         ),
       ),
       'entity_type' => 'node',
-      'fences_wrapper' => 'no_wrapper',
-      'field_name' => 'field_privacy',
-      'label' => 'Privacy',
+      'field_name' => 'field_question_answer',
+      'label' => 'Questions and Answers',
       'required' => 0,
       'settings' => array(
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 1,
-        'module' => 'options',
+        'active' => 0,
+        'module' => 'field_collection',
         'settings' => array(),
-        'type' => 'options_buttons',
-        'weight' => '7',
+        'type' => 'field_collection_embed',
+        'weight' => '5',
       ),
     ),
   );
 
-  // Exported field: 'node-policy-field_right_sidebar'.
-  $fields['node-policy-field_right_sidebar'] = array(
+  // Exported field: 'node-frequently_asked_questions-field_right_sidebar'.
+  $fields['node-frequently_asked_questions-field_right_sidebar'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '-1',
@@ -994,16 +718,19 @@ function vcr_policies_field_default_fields() {
       'type' => 'entityreference',
     ),
     'field_instance' => array(
-      'bundle' => 'policy',
+      'bundle' => 'frequently_asked_questions',
       'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '5',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 6,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1029,101 +756,23 @@ function vcr_policies_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'entityreference_autocomplete',
-        'weight' => '9',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-policy-field_unit'.
-  $fields['node-policy-field_unit'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '-1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_unit',
-      'foreign keys' => array(
-        'tid' => array(
-          'columns' => array(
-            'tid' => 'tid',
-          ),
-          'table' => 'taxonomy_term_data',
-        ),
-      ),
-      'indexes' => array(
-        'tid' => array(
-          0 => 'tid',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'taxonomy',
-      'settings' => array(
-        'allowed_values' => array(
-          0 => array(
-            'vocabulary' => 'vcr_unit',
-            'parent' => '0',
-          ),
-        ),
-        'options_list_callback' => '_taxonomy_access_term_options',
-        'profile2_private' => FALSE,
-      ),
-      'translatable' => '0',
-      'type' => 'taxonomy_term_reference',
-    ),
-    'field_instance' => array(
-      'bundle' => 'policy',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '9',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'fences_wrapper' => 'div',
-      'field_name' => 'field_unit',
-      'label' => 'Main unit',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'options',
-        'settings' => array(),
-        'type' => 'options_buttons',
-        'weight' => '13',
+        'weight' => '7',
       ),
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Answer');
   t('Body');
-  t('Email');
+  t('Display FAQs as');
   t('Footer');
   t('Header');
   t('Inner Content');
-  t('Main unit');
-  t('Name');
   t('Override Right Sidebar');
-  t('Phone');
-  t('Policy Contact');
-  t('Policy File');
-  t('Policy URL');
-  t('Privacy');
+  t('Question');
+  t('Questions and Answers');
   t('Right Sidebar');
-  t('Term');
 
   return $fields;
 }
