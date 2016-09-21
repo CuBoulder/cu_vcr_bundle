@@ -85,3 +85,36 @@ function cu_vcr_bundle_secure_permissions($role) {
     return $permissions[$role];
   }
 }
+
+/**
+ * Implements hook_menu().
+ *
+ * Redirect /vcr/* to docroot.
+ *
+ * @return array
+ */
+function cu_vcr_bundle_menu() {
+  $items = array();
+
+  $items['vcr/%'] = array(
+    'title' => 'VCR redirects',
+    'description' => 'Forward /vcr/* to docroot.',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'cu_vcr_bundle_legacy_redirect',
+    //'page arguments' => array(1),
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+/**
+ * Strip "vcr" from URI and redirect.
+ */
+function cu_vcr_bundle_legacy_redirect() {
+  // Get current path.
+  $path = current_path();
+
+  // Only need the URI after /vcr.
+  drupal_goto(substr($path, 3), array(), 301);
+}
