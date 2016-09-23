@@ -3,10 +3,9 @@ description = Configuration for the VCR site.
 core = 7.x
 package = VCR Bundle
 
-dependencies[] = vcr_article
+
 dependencies[] = vcr_compliance_requirements
 dependencies[] = vcr_content
-dependencies[] = vcr_context
 dependencies[] = vcr_homepage_widget
 dependencies[] = vcr_menu
 dependencies[] = vcr_page
@@ -15,6 +14,8 @@ dependencies[] = vcr_policies
 dependencies[] = vcr_reports
 dependencies[] = vcr_sitewide
 dependencies[] = vcr_users
+;dependencies[] = vcr_context
+;dependencies[] = vcr_article
 
 dependencies[] = better_exposed_filters
 
