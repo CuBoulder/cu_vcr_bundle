@@ -14,8 +14,8 @@ dependencies[] = vcr_policies
 dependencies[] = vcr_reports
 dependencies[] = vcr_sitewide
 dependencies[] = vcr_users
-;dependencies[] = vcr_context
-;dependencies[] = vcr_article
+dependencies[] = vcr_context
+dependencies[] = vcr_article
 
 dependencies[] = better_exposed_filters
 
