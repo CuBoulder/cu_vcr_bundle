@@ -7,3 +7,4 @@ dependencies[] = vcr_policies
 dependencies[] = vcr_compliance_requirements
 dependencies[] = vcr_reports
 
+dependencies[] = better_exposed_filters
