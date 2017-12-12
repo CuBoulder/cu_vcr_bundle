@@ -13,6 +13,7 @@
  */
 function vcr_content_install() {
   // VCR-13
+  /* Don't install content since this module could be disabled and re-enabled.
   variable_set('pathauto_node_pattern', '[node:menu-link:parents:join-path]/[node:title]');
   variable_set('pathauto_node_page_pattern', '[node:field_privacy]/[node:menu-link:parents:join-path]/[node:title]');
   _vcr_content_create_taxonomy_terms();
@@ -26,6 +27,7 @@ function vcr_content_install() {
   _vcr_content_grid_size_blocks();
   _vcr_content_create_education_menu_items();
   _vcr_content_final();
+  */
 }
 
 /**
