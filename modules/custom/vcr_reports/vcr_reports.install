@@ -4,6 +4,8 @@
  * Implements hook_install().
  */
 function vcr_reports_install() {
+   // Turn off since whitescreens site on install. 
+  /*
   $vocab = (object) array(
     'name' => 'Report Type',
     'machine_name' => 'report_type',
@@ -28,7 +30,9 @@ function vcr_reports_install() {
     taxonomy_term_save($term);
   }
 
-  _vcr_reports_create_report_nodes();
+ 
+  //_vcr_reports_create_report_nodes();
+  */
 }
 
 
@@ -549,6 +553,7 @@ function _vcr_reports_create_report_nodes() {
  * Code mostly taken from drush features.
  */
 function _vcr_reports_features_revert($modules) {
+  /*
   module_load_include('inc', 'features', 'features.export');
   features_include();
   foreach ($modules as $module) {
@@ -565,4 +570,5 @@ function _vcr_reports_features_revert($modules) {
       features_revert(array($module => array($component)));
     }
   }
+  */
 }
